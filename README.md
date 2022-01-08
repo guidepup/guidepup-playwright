@@ -51,9 +51,31 @@ test.describe("Playwright VoiceOver", () => {
 });
 ```
 
+## Playwright Config
+
+In your `playwright.config.ts` add the following for the best results with
+Guidepup for VoiceOver automation. 💥
+
+```ts
+import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { voConfig } from "@guidepup/playwright";
+
+const config: PlaywrightTestConfig = {
+  ...voConfig,
+  
+  // Your custom config ...
+};
+
+export default config;
+```
+
+Check out the configuration this adds [here](./src/voConfig.ts). 👀
+
 ## Resources
 
-Checkout the core [@guidepup/guidepup](https://github.com/guidepup/guidepup) project to learn more about how you can automate your screen-reader workflows using Guidepup.
+Checkout the core [@guidepup/guidepup](https://github.com/guidepup/guidepup)
+project to learn more about how you can automate your screen-reader workflows
+using Guidepup.
 
 ## License
 

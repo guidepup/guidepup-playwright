@@ -14,7 +14,8 @@ export const voConfig: VoiceOverPlaywrightTestConfig = {
 
   use: {
     /**
-     * VoiceOver can only control headed applications.
+     * Although VoiceOver can interact with headless applications, not all
+     * behaviours work as expected.
      */
     headless: false,
   },
