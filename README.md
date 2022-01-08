@@ -73,7 +73,7 @@ Check out the configuration this adds [here](./src/voConfig.ts). 👀
 
 ## Resources
 
-Checkout the core [@guidepup/guidepup](https://github.com/guidepup/guidepup)
+Checkout the core [`@guidepup/guidepup`](https://github.com/guidepup/guidepup)
 project to learn more about how you can automate your screen-reader workflows
 using Guidepup.
 
