@@ -1,7 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import { test } from "@playwright/test";
 import { VoiceOver, macOSActivate } from "@guidepup/guidepup";
-import { voConfig } from "./voConfig";
 
 const PLAYWRIGHT_APPLICATION = "Playwright";
 
@@ -25,7 +24,5 @@ const voTest = test.extend<{ vo: VoiceOver }>({
     }
   },
 });
-
-voTest.use(voConfig);
 
 export { voTest };
