@@ -19,7 +19,6 @@ const voTest = test.extend<{ vo: VoiceOver }>({
       await macOSActivate(PLAYWRIGHT_APPLICATION);
       await use(vo);
     } finally {
-      vo.stopLog();
       await vo.stop();
     }
   },

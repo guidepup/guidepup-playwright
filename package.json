@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Screen-reader driver for Playwright.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -31,7 +31,7 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "@guidepup/guidepup": "^0.9.3"
+    "@guidepup/guidepup": "^0.10.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.17.1",
