@@ -45,7 +45,7 @@ test.describe("Playwright VoiceOver", () => {
 
     // Search for Safari 👀
     await page.keyboard.type("Safari");
-    await vo.performAction();
+    await Promise.all([page.waitForNavigation(), vo.performAction()]);
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
   });
 });
