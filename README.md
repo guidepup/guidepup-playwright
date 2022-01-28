@@ -11,7 +11,7 @@
   Providing a reliable set of APIs to automate your screen-reader a11y workflows in Playwright.
 </p>
 
-## Getting Started
+## Getting Started 🦮
 
 Install `@guidepup/playwright` to your project:
 
@@ -51,7 +51,7 @@ test.describe("Playwright VoiceOver", () => {
 });
 ```
 
-## Playwright Config
+## Playwright Config 🐕‍🦺
 
 In your `playwright.config.ts` add the following for the best results with
 Guidepup for VoiceOver automation. 💥
@@ -71,12 +71,20 @@ export default config;
 
 Check out the configuration this adds [here](./src/voConfig.ts). 👀
 
-## Resources
+## Environment Setup 🐾
+
+Setup your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+
+```bash
+npx @guidepup/setup
+```
+
+## See Also 🐶
 
 Checkout the core [`@guidepup/guidepup`](https://github.com/guidepup/guidepup)
 project to learn more about how you can automate your screen-reader workflows
 using Guidepup.
 
-## License
+## License 🐩
 
 [MIT](https://github.com/guidepup/guidepup/blob/main/LICENSE)
