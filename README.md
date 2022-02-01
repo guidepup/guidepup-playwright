@@ -36,16 +36,18 @@ test.describe("Playwright VoiceOver", () => {
     });
 
     // Interact with the page 🙌
-    await vo.commandInteractWithItem();
+    await vo.cursor.interact();
 
     // Move across the navigation menu to the search bar using VoiceOver 🔎
-    while (!(await vo.getLastSpokenPhrase())?.startsWith("Search")) {
-      await vo.moveNext();
+    while (!(await vo.caption.lastSpokenPhrase())?.startsWith("Search")) {
+      await vo.cursor.next();
     }
 
     // Search for Safari 👀
-    await page.keyboard.type("Safari");
-    await Promise.all([page.waitForNavigation(), vo.performAction()]);
+    await vo.keyboard.type("Safari");
+    await vo.keyboard.press("ArrowDown");
+    await vo.keyboard.press("ArrowUp");
+    await Promise.all([page.waitForNavigation(), vo.cursor.act()]);
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
   });
 });
@@ -69,7 +71,7 @@ const config: PlaywrightTestConfig = {
 export default config;
 ```
 
-Check out the configuration this adds [here](./src/voConfig.ts). 👀
+Check out the configuration this adds [in the voConfig.ts file](./src/voConfig.ts). 👀
 
 ## Environment Setup 🐾
 
@@ -77,6 +79,13 @@ Setup your environment for screen-read automation with [`@guidepup/setup`](https
 
 ```bash
 npx @guidepup/setup
+```
+
+If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup):
+
+```yaml
+- name: Setup Environment
+  uses: guidepup/setup-action
 ```
 
 ## See Also 🐶
