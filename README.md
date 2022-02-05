@@ -36,18 +36,18 @@ test.describe("Playwright VoiceOver", () => {
     });
 
     // Interact with the page 🙌
-    await vo.cursor.interact();
+    await vo.interact();
 
     // Move across the navigation menu to the search bar using VoiceOver 🔎
-    while (!(await vo.caption.lastSpokenPhrase())?.startsWith("Search")) {
-      await vo.cursor.next();
+    while (!(await vo.lastSpokenPhrase())?.startsWith("Search")) {
+      await vo.next();
     }
 
     // Search for Safari 👀
-    await vo.keyboard.type("Safari");
-    await vo.keyboard.press("ArrowDown");
-    await vo.keyboard.press("ArrowUp");
-    await Promise.all([page.waitForNavigation(), vo.cursor.act()]);
+    await vo.type("Safari");
+    await vo.press("ArrowDown");
+    await vo.press("ArrowUp");
+    await Promise.all([page.waitForNavigation(), vo.act()]);
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
   });
 });
