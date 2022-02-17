@@ -1,6 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import { test } from "@playwright/test";
-import { VoiceOver, macOSActivate } from "@guidepup/guidepup";
+import { voiceOver, macOSActivate } from "@guidepup/guidepup";
 
 const PLAYWRIGHT_APPLICATION = "Playwright";
 
@@ -10,16 +10,14 @@ const PLAYWRIGHT_APPLICATION = "Playwright";
  *
  * A fresh started VoiceOver instance `vo` is provided to each test.
  */
-const voTest = test.extend<{ vo: VoiceOver }>({
-  vo: async ({}, use) => {
-    const vo = new VoiceOver();
-
+const voTest = test.extend<{ voiceOver }>({
+  voiceOver: async ({}, use) => {
     try {
-      await vo.start();
+      await voiceOver.start();
       await macOSActivate(PLAYWRIGHT_APPLICATION);
-      await use(vo);
+      await use(voiceOver);
     } finally {
-      await vo.stop();
+      await voiceOver.stop();
     }
   },
 });
