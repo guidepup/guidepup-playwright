@@ -10,7 +10,7 @@ const PLAYWRIGHT_APPLICATION = "Playwright";
  *
  * A fresh started VoiceOver instance `vo` is provided to each test.
  */
-const voTest = test.extend<{ voiceOver }>({
+const voTest = test.extend<{ voiceOver: typeof voiceOver }>({
   voiceOver: async ({}, use) => {
     try {
       await voiceOver.start();
