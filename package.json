@@ -35,8 +35,8 @@
     "@guidepup/guidepup": "^0.13.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.17.1",
-    "playwright": "^1.17.1",
+    "@playwright/test": "1.17.1",
+    "playwright": "1.17.1",
     "@types/node": "^16.11.11",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
