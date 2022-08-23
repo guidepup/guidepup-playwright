@@ -14,5 +14,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16
+      - name: Setup Environment
+        uses: guidepup/setup-action
       - run: yarn install --frozen-lockfile
       - run: yarn ci
