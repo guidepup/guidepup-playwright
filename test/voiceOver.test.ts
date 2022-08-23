@@ -19,11 +19,14 @@ test.describe("Playwright VoiceOver", () => {
       await voiceOver.press("Tab");
     }
 
+    await voiceOver.act();
+
     // Search for Safari 👀
     await voiceOver.type("Safari");
     await voiceOver.press("ArrowDown");
     await voiceOver.press("ArrowUp");
-    await Promise.all([page.waitForNavigation(), voiceOver.act()]);
+    await voiceOver.press("Enter");
+
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
   });
 });

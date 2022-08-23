@@ -22,7 +22,7 @@ npm install --save-dev @guidepup/playwright
 And get cracking with your first screen-reader tests in Playwright! 🚀
 
 ```ts
-import { voTest as test } from "@guidepup/playwright";
+import { voTest as test } from "../src/index";
 import { expect } from "@playwright/test";
 
 test.describe("Playwright VoiceOver", () => {
@@ -43,11 +43,14 @@ test.describe("Playwright VoiceOver", () => {
       await voiceOver.press("Tab");
     }
 
+    await voiceOver.act();
+
     // Search for Safari 👀
     await voiceOver.type("Safari");
     await voiceOver.press("ArrowDown");
     await voiceOver.press("ArrowUp");
-    await Promise.all([page.waitForNavigation(), voiceOver.act()]);
+    await voiceOver.press("Enter");
+
     expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
   });
 });
