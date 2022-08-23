@@ -40,7 +40,7 @@ test.describe("Playwright VoiceOver", () => {
 
     // Move across the navigation menu to the search bar using VoiceOver 🔎
     while (!(await voiceOver.lastSpokenPhrase())?.startsWith("Search")) {
-      await voiceOver.next();
+      await voiceOver.press("Tab");
     }
 
     // Search for Safari 👀
@@ -64,7 +64,7 @@ import { voConfig } from "@guidepup/playwright";
 
 const config: PlaywrightTestConfig = {
   ...voConfig,
-  
+
   // Your custom config ...
 };
 
