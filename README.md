@@ -64,7 +64,9 @@ import { voConfig } from "@guidepup/playwright";
 
 const config: PlaywrightTestConfig = {
   ...voConfig,
-
+  use: {
+    ...voConfig.use,
+  },
   // Your custom config ...
 };
 
