@@ -22,7 +22,7 @@ npm install --save-dev @guidepup/playwright
 And get cracking with your first screen-reader tests in Playwright! 🚀
 
 ```ts
-import { voTest as test } from "../src/index";
+import { voTest as test } from "@guidepup/playwright";
 import { expect } from "@playwright/test";
 
 test.describe("Playwright VoiceOver", () => {
