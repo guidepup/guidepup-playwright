@@ -1711,6 +1711,13 @@ playwright-core@=1.17.1:
     yauzl "^2.10.0"
     yazl "^2.5.1"
 
+playwright@1.17.1:
+  version "1.17.1"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.17.1.tgz#a6d63302ee40f41283c4bf869de261c4743a787c"
+  integrity sha512-DisCkW9MblDJNS3rG61p8LiLA2WA7IY/4A4W7DX4BphWe/HuWjKmGQptuk4NVIh5UuSwXpW/jaH2+ZgjHs3GMA==
+  dependencies:
+    playwright-core "=1.17.1"
+
 pngjs@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-4.0.1.tgz#f803869bb2fc1bfe1bf99aa4ec21c108117cfdbe"
