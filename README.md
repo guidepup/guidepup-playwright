@@ -88,6 +88,10 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
   uses: guidepup/setup-action@0.1.3
 ```
 
+## Example 👀
+
+Check out [this VoiceOver example](./example/README.md).
+
 ## See Also 🐶
 
 Checkout the core [`@guidepup/guidepup`](https://github.com/guidepup/guidepup)

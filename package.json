@@ -28,13 +28,15 @@
     "compile": "tsc",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "pretest": "npx playwright install webkit",
+    "test": "playwright test -c ./example/playwright.config.ts ./example/tests/playwright.spec.ts"
   },
   "dependencies": {
     "@guidepup/guidepup": "^0.13.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.17.1",
+    "@playwright/test": "^1.25.1",
     "@types/node": "^16.11.11",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
@@ -46,6 +48,6 @@
     "typescript": "^4.5.2"
   },
   "peerDependencies": {
-    "@playwright/test": "^1.17.1"
+    "@playwright/test": "^1.25.1"
   }
 }
