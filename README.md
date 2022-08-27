@@ -83,7 +83,7 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ## Example 👀
 
-Check out [this VoiceOver example](./example/README.md).
+Check out [this VoiceOver example](./example/).
 
 ## See Also 🐶
 
