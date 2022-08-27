@@ -26,30 +26,23 @@ import { voTest as test } from "@guidepup/playwright";
 import { expect } from "@playwright/test";
 
 test.describe("Playwright VoiceOver", () => {
-  test("I can navigate the Playwright website using VoiceOver", async ({
+  test("I can navigate the Guidepup Github page", async ({
     page,
     voiceOver,
   }) => {
-    // Navigate to Playwright website 🎉
-    await page.goto("https://playwright.dev/", {
+    // Navigate to Guidepup GitHub page 🎉
+    await page.goto("https://github.com/guidepup/guidepup", {
       waitUntil: "domcontentloaded",
     });
 
-    // Interact with the page 🙌
+    // Wait for page to be ready and interact 🙌
+    await expect(page.locator('header[role="banner"]')).toBeVisible();
     await voiceOver.interact();
 
-    // Move across the navigation menu to the search bar using VoiceOver 🔎
-    while (!(await voiceOver.lastSpokenPhrase())?.startsWith("Search")) {
-      await voiceOver.next();
+    // Move across the page menu to the Guidepup heading using VoiceOver 🔎
+    while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
+      await voiceOver.perform(voiceOver.keyboard.commands.findNextHeading);
     }
-
-    // Search for Safari 👀
-    await voiceOver.type("Safari");
-    await voiceOver.press("ArrowDown");
-    await voiceOver.press("ArrowUp");
-    await Promise.all([page.waitForNavigation(), voiceOver.act()]);
-    expect(page.url()).toBe("https://playwright.dev/docs/browsers#webkit");
-  });
 });
 ```
 
