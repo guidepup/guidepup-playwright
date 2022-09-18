@@ -8,7 +8,10 @@ on:
 
 jobs:
   test-voiceover:
-    runs-on: macos-11
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-11, macos-12, macos-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
