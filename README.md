@@ -11,7 +11,7 @@
   Providing a reliable set of APIs to automate your screen-reader a11y workflows in Playwright.
 </p>
 
-## Getting Started 🦮
+## Getting Started
 
 Install `@guidepup/playwright` to your project:
 
@@ -19,7 +19,7 @@ Install `@guidepup/playwright` to your project:
 npm install --save-dev @guidepup/playwright
 ```
 
-And get cracking with your first screen-reader tests in Playwright! 🚀
+And get cracking with your first screen-reader tests in Playwright!
 
 ```ts
 import { voTest as test } from "@guidepup/playwright";
@@ -30,26 +30,26 @@ test.describe("Playwright VoiceOver", () => {
     page,
     voiceOver,
   }) => {
-    // Navigate to Guidepup GitHub page 🎉
+    // Navigate to Guidepup GitHub page
     await page.goto("https://github.com/guidepup/guidepup", {
       waitUntil: "domcontentloaded",
     });
 
-    // Wait for page to be ready and interact 🙌
+    // Wait for page to be ready and interact
     await expect(page.locator('header[role="banner"]')).toBeVisible();
     await voiceOver.interact();
 
-    // Move across the page menu to the Guidepup heading using VoiceOver 🔎
+    // Move across the page menu to the Guidepup heading using VoiceOver
     while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
       await voiceOver.perform(voiceOver.keyboard.commands.findNextHeading);
     }
 });
 ```
 
-## Playwright Config 🐕‍🦺
+## Playwright Config
 
 In your `playwright.config.ts` add the following for the best results with
-Guidepup for VoiceOver automation. 💥
+Guidepup for VoiceOver automation.
 
 ```ts
 import { devices, PlaywrightTestConfig } from "@playwright/test";
@@ -64,9 +64,9 @@ const config: PlaywrightTestConfig = {
 export default config;
 ```
 
-Check out the configuration this adds [in the voConfig.ts file](./src/voConfig.ts). 👀
+Check out the configuration this adds [in the voConfig.ts file](./src/voConfig.ts).
 
-## Environment Setup 🐾
+## Environment Setup
 
 Setup your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
@@ -81,16 +81,16 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
   uses: guidepup/setup-action@0.5.0
 ```
 
-## Example 👀
+## Example
 
 Check out [this VoiceOver example](./example/).
 
-## See Also 🐶
+## See Also
 
 Checkout the core [`@guidepup/guidepup`](https://github.com/guidepup/guidepup)
 project to learn more about how you can automate your screen-reader workflows
 using Guidepup.
 
-## License 🐩
+## License
 
 [MIT](https://github.com/guidepup/guidepup/blob/main/LICENSE)
