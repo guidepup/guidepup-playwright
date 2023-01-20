@@ -29,7 +29,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "prepublish": "yarn build",
-    "pretest": "npx playwright install webkit chrome",
+    "pretest": "npx playwright install webkit chromium",
     "test": "playwright test -c ./example/playwright.config.ts ./example/tests/"
   },
   "dependencies": {

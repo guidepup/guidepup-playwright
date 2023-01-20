@@ -3,11 +3,11 @@ import { voiceOver, macOSActivate } from "@guidepup/guidepup";
 
 const applicationNameMap = {
   chromium: "Chromium",
-  chrome: "Chrome",
-  "chrome-beta": "Chrome Beta",
-  msedge: "",
-  "msedge-beta": "",
-  "msedge-dev": "",
+  chrome: "Google Chrome",
+  "chrome-beta": "Google Chrome Beta",
+  msedge: "Microsoft Edge",
+  "msedge-beta": "Microsoft Edge Beta",
+  "msedge-dev": "Microsoft Edge Dev",
   firefox: "Firefox",
   webkit: "Playwright",
 };
