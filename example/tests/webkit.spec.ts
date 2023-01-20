@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import itemTextSnapshot from "./itemTextSnapshot.json";
+import itemTextSnapshot from "./webkit.itemTextSnapshot.json";
 import { voTest as test } from "../../src";
 
 function delay(ms: number) {
@@ -22,9 +22,12 @@ async function waitForWebContentAnnouncement(voiceOver) {
 
 test.describe("Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({
+    browserName,
     page,
     voiceOver,
   }) => {
+    test.skip(browserName !== "webkit", "Webkit only test");
+
     // Navigate to Guidepup GitHub page 🎉
     await page.goto("https://github.com/guidepup/guidepup", {
       waitUntil: "domcontentloaded",

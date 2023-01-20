@@ -29,8 +29,8 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "prepublish": "yarn build",
-    "pretest": "npx playwright install webkit",
-    "test": "playwright test -c ./example/playwright.config.ts ./example/tests/playwright.spec.ts"
+    "pretest": "npx playwright install webkit chrome",
+    "test": "playwright test -c ./example/playwright.config.ts ./example/tests/"
   },
   "dependencies": {
     "@guidepup/guidepup": "^0.14.7"

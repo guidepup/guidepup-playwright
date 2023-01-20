@@ -12,6 +12,10 @@ const config: PlaywrightTestConfig = {
       name: "webkit",
       use: { ...devices["Desktop Safari"], headless: false, video: "on" },
     },
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"], headless: false, video: "on" },
+    },
   ],
 };
 
