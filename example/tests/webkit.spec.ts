@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import itemTextSnapshot from "./webkit.itemTextSnapshot.json";
+import snapshot from "./webkit.snapshot.json";
 import { voTest as test } from "../../src";
 
 test.describe("Playwright VoiceOver", () => {
@@ -26,10 +26,10 @@ test.describe("Playwright VoiceOver", () => {
 
     // Assert that we've ended up where we expected and what we were told on
     // the way there is as expected.
-    const itemTextLog = await voiceOver.itemTextLog();
+    const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
-    for (const expectedItem of itemTextSnapshot) {
-      expect(itemTextLog).toContain(expectedItem);
+    for (const expectedPhrase of snapshot) {
+      expect(spokenPhraseLog).toContain(expectedPhrase);
     }
   });
 });
