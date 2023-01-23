@@ -8,7 +8,7 @@ const applicationNameMap = {
   msedge: "Microsoft Edge",
   "msedge-beta": "Microsoft Edge Beta",
   "msedge-dev": "Microsoft Edge Dev",
-  firefox: "Firefox",
+  firefox: "Nightly",
   webkit: "Playwright",
 };
 
