@@ -1,30 +1,15 @@
 import { expect } from "@playwright/test";
-import itemTextSnapshot from "./itemTextSnapshot.json";
+import snapshot from "./webkit.snapshot.json";
 import { voTest as test } from "../../src";
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function waitForWebContentAnnouncement(voiceOver) {
-  for (let i = 0; i < 10; i++) {
-    const itemText = await voiceOver.itemText();
-
-    if (itemText?.includes("web content")) {
-      return;
-    }
-
-    await delay(50);
-  }
-
-  throw new Error("web content could not be found");
-}
 
 test.describe("Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({
+    browserName,
     page,
     voiceOver,
   }) => {
+    test.skip(browserName !== "webkit", "Webkit only test");
+
     // Navigate to Guidepup GitHub page 🎉
     await page.goto("https://github.com/guidepup/guidepup", {
       waitUntil: "domcontentloaded",
@@ -32,7 +17,6 @@ test.describe("Playwright VoiceOver", () => {
 
     // Wait for page to be ready and interact 🙌
     await expect(page.locator('header[role="banner"]')).toBeVisible();
-    await waitForWebContentAnnouncement(voiceOver);
     await voiceOver.interact();
 
     // Move across the page menu to the Guidepup heading using VoiceOver 🔎
@@ -42,10 +26,10 @@ test.describe("Playwright VoiceOver", () => {
 
     // Assert that we've ended up where we expected and what we were told on
     // the way there is as expected.
-    const itemTextLog = await voiceOver.itemTextLog();
+    const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
-    for (const expectedItem of itemTextSnapshot) {
-      expect(itemTextLog).toContain(expectedItem);
+    for (const expectedPhrase of snapshot) {
+      expect(!!spokenPhraseLog.find(log => log.includes(expectedPhrase))).toBe(true);
     }
   });
 });

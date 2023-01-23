@@ -29,10 +29,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@guidepup/guidepup@^0.14.7":
-  version "0.14.7"
-  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.14.7.tgz#d83ba5295126b2f391de7c10d0554d5d09b82614"
-  integrity sha512-q/uSktR+eumcgqTmo7ZqW2EMhw3o/ki1btxHWqGxBWJgoQHPz6+zWqzv15VgcmSipG8EOCpcfbWOnEOE00o53A==
+"@guidepup/guidepup@^0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.15.0.tgz#d9cd40f933f31c03d65f6bef9a31fee953654cc0"
+  integrity sha512-MUPtcp57e6Ehtgtn29nb1spObIz4dUA3aTj+FL4RGBGmv2q+YPXJ0zEKP2MP04QsTAJ5fL8vN2nddmnGGxSS+w==
 
 "@humanwhocodes/config-array@^0.9.2":
   version "0.9.2"

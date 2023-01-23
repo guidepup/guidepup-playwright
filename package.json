@@ -1,7 +1,7 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.7.5",
-  "description": "Screen-reader driver for Playwright.",
+  "version": "0.8.0",
+  "description": "Screen reader driver for Playwright tests.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Craig Morten <craig.morten@hotmail.co.uk>",
@@ -29,11 +29,11 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "prepublish": "yarn build",
-    "pretest": "npx playwright install webkit",
-    "test": "playwright test -c ./example/playwright.config.ts ./example/tests/playwright.spec.ts"
+    "pretest": "npx playwright install webkit chromium",
+    "test": "playwright test -c ./example/playwright.config.ts ./example/tests/"
   },
   "dependencies": {
-    "@guidepup/guidepup": "^0.14.7"
+    "@guidepup/guidepup": "^0.15.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.28.1",
