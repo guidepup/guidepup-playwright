@@ -29,7 +29,7 @@ test.describe("Playwright VoiceOver", () => {
     const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
     for (const expectedPhrase of snapshot) {
-      expect(spokenPhraseLog).toContain(expectedPhrase);
+      expect(spokenPhraseLog.find(log => log.includes(expectedPhrase))).toBe(true);
     }
   });
 });
