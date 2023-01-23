@@ -30,9 +30,9 @@ test.describe("Chromium VoiceOver", () => {
     const spokenPhraseLog = await voiceOver.spokenPhraseLog();
 
     for (const expectedPhrase of snapshot) {
-      expect(spokenPhraseLog.find((log) => log.includes(expectedPhrase))).toBe(
-        true
-      );
+      expect(
+        !!spokenPhraseLog.find((log) => log.includes(expectedPhrase))
+      ).toBe(true);
     }
   });
 });
