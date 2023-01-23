@@ -1,7 +1,7 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.7.6",
-  "description": "Screen-reader driver for Playwright.",
+  "version": "0.8.0",
+  "description": "Screen reader driver for Playwright tests.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Craig Morten <craig.morten@hotmail.co.uk>",
@@ -33,7 +33,7 @@
     "test": "playwright test -c ./example/playwright.config.ts ./example/tests/"
   },
   "dependencies": {
-    "@guidepup/guidepup": "^0.14.7"
+    "@guidepup/guidepup": "^0.15.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.28.1",

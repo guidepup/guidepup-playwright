@@ -14,7 +14,7 @@ const applicationNameMap = {
 
 /**
  * These tests extend the default Playwright environment that launches the
- * browser with a running instance of the VoiceOver screen-reader for MacOS.
+ * browser with a running instance of the VoiceOver screen reader for MacOS.
  *
  * A fresh started VoiceOver instance `vo` is provided to each test.
  */
