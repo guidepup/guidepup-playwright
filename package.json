@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Screen reader driver for Playwright tests.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -29,25 +29,28 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "prepublish": "yarn build",
-    "pretest": "npx playwright install webkit chromium",
-    "test": "playwright test -c ./example/playwright.config.ts ./example/tests/"
+    "pretest": "npx playwright install chromium firefox webkit",
+    "test": "yarn test:chromium && yarn test:firefox && yarn test:webkit",
+    "test:chromium": "playwright test --config ./example/chromium.config.ts ./example/tests/chromium/",
+    "test:firefox": "playwright test --config ./example/firefox.config.ts ./example/tests/firefox/",
+    "test:webkit": "playwright test --config ./example/webkit.config.ts ./example/tests/webkit/"
   },
   "dependencies": {
-    "@guidepup/guidepup": "^0.15.0"
+    "@guidepup/guidepup": "^0.15.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.28.1",
-    "@types/node": "^16.11.11",
+    "@playwright/test": "^1.29.2",
+    "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "eslint": "^8.4.0",
     "eslint-config-prettier": "^8.3.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.1.2",
     "ts-node": "^10.4.0",
     "typedoc": "^0.23.21",
     "typescript": "^4.5.2"
   },
   "peerDependencies": {
-    "@playwright/test": "^1.28.1"
+    "@playwright/test": "^1.29.2"
   }
 }

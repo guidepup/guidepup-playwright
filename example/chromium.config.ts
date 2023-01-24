@@ -1,17 +1,11 @@
 import { devices, PlaywrightTestConfig } from "@playwright/test";
-import { voConfig } from "../src";
 
 const config: PlaywrightTestConfig = {
-  ...voConfig,
   reportSlowTests: null,
   workers: 1,
-  timeout: 2 * 60 * 1000,
-  retries: 3,
+  timeout: 3 * 60 * 1000,
+  retries: 2,
   projects: [
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"], headless: false, video: "on" },
-    },
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"], headless: false, video: "on" },
