@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-11, macos-12]
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -20,7 +21,8 @@ jobs:
       - name: Guidepup Setup
         uses: guidepup/setup-action@0.7.0
       - run: yarn install --frozen-lockfile
-      - run: yarn test
+      - run: yarn pretest
+      - run: yarn test:${{ matrix.browser }}
       - uses: actions/upload-artifact@v2
         if: always()
         with:
