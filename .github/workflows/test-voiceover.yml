@@ -27,4 +27,6 @@ jobs:
         if: always()
         with:
           name: artifacts
-          path: ./test-results/**/*
+          path: |
+            **/test-results/**/*
+            **/recordings/**/*
