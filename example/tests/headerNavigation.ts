@@ -12,9 +12,6 @@ export async function headerNavigation({ page, voiceOver }) {
 
   // Wait for page to be ready and interact 🙌
   await expect(page.locator('header[role="banner"]')).toBeVisible();
-  
-  await voiceOver.stopInteracting();
-  await voiceOver.stopInteracting();
   await delay(500);
 
   await voiceOver.interact();
