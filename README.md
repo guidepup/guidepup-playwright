@@ -94,7 +94,7 @@ Check out the configuration this adds [in the voConfig.ts file](./src/voConfig.t
 
 Set up your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
-```bash
+```console
 npx @guidepup/setup
 ```
 
