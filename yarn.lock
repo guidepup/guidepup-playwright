@@ -24,10 +24,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@guidepup/guidepup@^0.15.2":
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.15.2.tgz#d93d686515a0f731f1a6346ced365e953feb5216"
-  integrity sha512-kTKQu2huvMIUkupbUCn/qHOopPw3cvoDRJrElGMkBE74PCpqkuQDJGa/X8H7VvahAgndErtlUm/E4aaYTR4x/Q==
+"@guidepup/guidepup@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.16.0.tgz#a09841d8594d2b000c7b114a45332890da72c6e9"
+  integrity sha512-kHmhIAkFn05FYT/MgHBc4iXi6OVsiDeiY4g6mp77p0brcf9HZhcY+iko+bVhW2jPWuJNysVTUbDNlOYUsrM43w==
 
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
@@ -87,13 +87,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@playwright/test@^1.29.2":
-  version "1.29.2"
-  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.29.2.tgz#c48184721d0f0b7627a886e2ec42f1efb2be339d"
-  integrity sha512-+3/GPwOgcoF0xLz/opTnahel1/y42PdcgZ4hs+BZGIUjtmEFSXGg+nFoaH3NSmuc7a6GSFwXDJ5L7VXpqzigNg==
+"@playwright/test@^1.30.0":
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.30.0.tgz#8c0c4930ff2c7be7b3ec3fd434b2a3b4465ed7cb"
+  integrity sha512-SVxkQw1xvn/Wk/EvBnqWIq6NLo1AppwbYOjNLmyU0R1RoQ3rLEBtmjTnElcnz8VEtn11fptj1ECxK0tgURhajw==
   dependencies:
     "@types/node" "*"
-    playwright-core "1.29.2"
+    playwright-core "1.30.0"
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
@@ -855,10 +855,10 @@ picomatch@^2.3.1:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
-playwright-core@1.29.2:
-  version "1.29.2"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.29.2.tgz#2e8347e7e8522409f22b244e600e703b64022406"
-  integrity sha512-94QXm4PMgFoHAhlCuoWyaBYKb92yOcGVHdQLoxQ7Wjlc7Flg4aC/jbFW7xMR52OfXMVkWicue4WXE7QEegbIRA==
+playwright-core@1.30.0:
+  version "1.30.0"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.30.0.tgz#de987cea2e86669e3b85732d230c277771873285"
+  integrity sha512-7AnRmTCf+GVYhHbLJsGUtskWTE33SwMZkybJ0v6rqR1boxq2x36U7p1vDRV7HO2IwTZgmycracLxPEJI49wu4g==
 
 prelude-ls@^1.2.1:
   version "1.2.1"

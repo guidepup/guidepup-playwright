@@ -8,15 +8,39 @@
   <a href="https://github.com/guidepup/guidepup-playwright/blob/main/LICENSE"><img alt="@guidepup/playwright uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup-playwright" /></a>
 </p>
 <p align="center">
-  Providing a reliable set of APIs to automate your screen reader a11y workflows in Playwright.
+  Reliable automation for your screen reader a11y workflows in Playwright supporting:
+</p>
+<p align="center">
+  <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a>
+</p>
+<p align="center">
+  <b>NVDA on Windows</b> - <a href="https://github.com/guidepup/guidepup/pull/33">Coming Soon!</a>
 </p>
 
+## Intro
+
+A11y static analysis tools [only cover 25% of WCAG](https://karlgroves.com/web-accessibility-testing-what-can-be-tested-and-how/) and don't assure on the quality of the user experience for screen reader users. This means teams need to perform lots of manual tests with multiple screen readers to ensure great UX which can take a lot of time... **not anymore!**
+
+With [Guidepup](https://www.guidepup.dev/) you can automate your screen reader test workflows the same you as would for mouse or keyboard based scenarios, no sweat!
+
+## Quick Features
+
+- **Full Control** - if a screen reader has a keyboard command, then Guidepup supports it.
+- **Mirrors Real User Experience** - assert on what users really do and hear when using screen readers.
+- **Framework Agnostic** - run with Jest, with Playwright, as an independent script, no vendor lock-in.
+
 ## Getting Started
+
+Set up your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+
+```console
+npx @guidepup/setup
+```
 
 Install `@guidepup/playwright` to your project:
 
 ```bash
-npm install --save-dev @guidepup/playwright
+npm install --save-dev @guidepup/playwright @playwright/test
 ```
 
 And get cracking with your first screen reader tests in Playwright!
@@ -68,7 +92,7 @@ Check out the configuration this adds [in the voConfig.ts file](./src/voConfig.t
 
 ## Environment Setup
 
-Setup your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+Set up your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
 ```bash
 npx @guidepup/setup
@@ -78,12 +102,16 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ```yaml
 - name: Setup Environment
-  uses: guidepup/setup-action@0.7.0
+  uses: guidepup/setup-action@0.8.1
 ```
+
+## Documentation
+
+Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real world examples, environment setup, and complete Guidepup API documentation with examples.
 
 ## Example
 
-Check out [this VoiceOver example](./example/).
+Check out [this cross-browser VoiceOver example](./example/).
 
 ## See Also
 
