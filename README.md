@@ -39,7 +39,7 @@ npx @guidepup/setup
 
 Install `@guidepup/playwright` to your project:
 
-```bash
+```console
 npm install --save-dev @guidepup/playwright @playwright/test
 ```
 
