@@ -1,5 +1,6 @@
 import { test } from "@playwright/test";
 import { voiceOver, macOSActivate } from "@guidepup/guidepup";
+import type { VoiceOver } from "@guidepup/guidepup";
 
 const applicationNameMap = {
   chromium: "Chromium",
@@ -18,7 +19,7 @@ const applicationNameMap = {
  *
  * A fresh started VoiceOver instance `vo` is provided to each test.
  */
-const voTest = test.extend<{ voiceOver: typeof voiceOver }>({
+const voTest = test.extend<{ voiceOver: VoiceOver }>({
   voiceOver: async ({ browserName }, use) => {
     try {
       await voiceOver.start();
