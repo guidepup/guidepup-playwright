@@ -26,7 +26,11 @@ const voTest = test.extend<{ voiceOver: VoiceOver }>({
       await macOSActivate(applicationNameMap[browserName]);
       await use(voiceOver);
     } finally {
-      await voiceOver.stop();
+      try {
+        await voiceOver.stop();
+      } catch {
+        // swallow stop failure
+      }
     }
   },
 });
