@@ -82,7 +82,7 @@ import { voConfig } from "@guidepup/playwright";
 
 const config: PlaywrightTestConfig = {
   ...voConfig,
-  
+
   // Your custom config ...
 };
 
@@ -103,7 +103,7 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ```yaml
 - name: Setup Environment
-  uses: guidepup/setup-action@0.8.1
+  uses: guidepup/setup-action@0.13.0
 ```
 
 ## Documentation
