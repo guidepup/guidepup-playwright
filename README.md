@@ -41,8 +41,10 @@ npx @guidepup/setup
 Install `@guidepup/playwright` to your project:
 
 ```console
-npm install --save-dev @guidepup/playwright @playwright/test
+npm install --save-dev @guidepup/playwright @guidepup/guidepup @playwright/test
 ```
+
+Note: you require `@guidepup/guidepup` and `@playwright/test` as they are peer dependencies to this project.
 
 And get cracking with your first screen reader tests in Playwright!
 
