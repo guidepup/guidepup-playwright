@@ -1,12 +1,12 @@
 import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
-import itemTextSnapshot from "./chromium.itemText.snapshot.json";
-import { logIncludesExpectedPhrases } from "../logIncludesExpectedPhrases";
+import itemTextSnapshot from "./webkit.itemText.snapshot.json";
+import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import { macOSRecord } from "@guidepup/guidepup";
-import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
-import { voTest as test } from "../../../src";
+import spokenPhraseSnapshot from "./webkit.spokenPhrase.snapshot.json";
+import { voiceOverTest as test } from "../../../../src";
 
-test.describe("Chromium Playwright VoiceOver", () => {
+test.describe("Webkit Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({
     browser,
     browserName,

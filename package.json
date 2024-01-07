@@ -24,33 +24,36 @@
   "scripts": {
     "build": "yarn clean && yarn compile",
     "ci": "yarn clean && yarn lint && yarn build",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib test-results recordings",
     "compile": "tsc",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "prepublish": "yarn build",
     "pretest": "npx playwright install chromium firefox webkit",
-    "test": "yarn test:chromium && yarn test:firefox && yarn test:webkit",
-    "test:chromium": "playwright test --config ./example/chromium.config.ts ./example/tests/chromium/",
-    "test:firefox": "playwright test --config ./example/firefox.config.ts ./example/tests/firefox/",
-    "test:webkit": "playwright test --config ./example/webkit.config.ts ./example/tests/webkit/"
+    "test:nvda": "yarn test:nvda:chromium && yarn test:nvda:firefox",
+    "test:voiceover": "yarn test:voiceover:chromium && yarn test:voiceover:firefox && yarn test:voiceover:webkit",
+    "test:nvda:chromium": "playwright test --config ./examples/playwright-nvda/chromium.config.ts ./examples/playwright-nvda/tests/chromium/",
+    "test:nvda:firefox": "playwright test --config ./examples/playwright-nvda/firefox.config.ts ./examples/playwright-nvda/tests/firefox/",
+    "test:voiceover:chromium": "playwright test --config ./examples/playwright-voiceover/chromium.config.ts ./examples/playwright-voiceover/tests/chromium/",
+    "test:voiceover:firefox": "playwright test --config ./examples/playwright-voiceover/firefox.config.ts ./examples/playwright-voiceover/tests/firefox/",
+    "test:voiceover:webkit": "playwright test --config ./examples/playwright-voiceover/webkit.config.ts ./examples/playwright-voiceover/tests/webkit/"
   },
   "devDependencies": {
-    "@guidepup/guidepup": "^0.21.0",
+    "@guidepup/guidepup": "^0.22.0",
     "@playwright/test": "^1.40.1",
-    "@types/node": "^20.10.5",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "@typescript-eslint/parser": "^6.16.0",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.25.4",
+    "typedoc": "^0.25.6",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@guidepup/guidepup": "^0.21.0",
-    "@playwright/test": "^1.29.2"
+    "@guidepup/guidepup": "^0.22.0",
+    "@playwright/test": "^1.40.1"
   },
   "resolutions": {
     "strip-ansi": "6.0.1",
