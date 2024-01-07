@@ -88,13 +88,23 @@ export const voiceOverTest = test.extend<{
         await macOSActivate(applicationName);
 
         // Ensure the document is ready and focused.
+        await page.bringToFront();
         await page.locator("body").waitFor();
         await page.locator("body").focus();
 
         // Navigate to the beginning of the web content.
         await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.moveCursorToKeyboardFocus
+        );
+        await voiceOverPlaywright.lastSpokenPhrase();
+
+        await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.jumpToLeftEdge
         );
+        await voiceOverPlaywright.lastSpokenPhrase();
+
+        await voiceOverPlaywright.previous();
+        await voiceOverPlaywright.lastSpokenPhrase();
 
         // Clear out logs.
         await voiceOverPlaywright.clearItemTextLog();

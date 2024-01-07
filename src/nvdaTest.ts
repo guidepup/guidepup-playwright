@@ -91,6 +91,12 @@ export const nvdaTest = test.extend<{
       }
 
       nvdaPlaywright.navigateToWebContent = async () => {
+        // Make sure NVDA is not in focus mode.
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.exitFocusMode
+        );
+        await nvdaPlaywright.lastSpokenPhrase();
+
         // Ensure application is brought to front and focused.
         let applicationSwitchRetryCount = 0;
 
@@ -109,16 +115,18 @@ export const nvdaTest = test.extend<{
         }
 
         // Ensure the document is ready and focused.
+        await page.bringToFront();
         await page.locator("body").waitFor();
         await page.locator("body").focus();
 
-        // Make sure NVDA is not in focus mode.
-        await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.exitFocusMode
-        );
-
         // Navigate to the beginning of the web content.
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.moveToFocusObject
+        );
+        await nvdaPlaywright.lastSpokenPhrase();
+
         await nvdaPlaywright.perform(MOVE_TO_TOP_OF_PAGE);
+        await nvdaPlaywright.lastSpokenPhrase();
 
         // Clear out logs.
         await nvdaPlaywright.clearItemTextLog();
