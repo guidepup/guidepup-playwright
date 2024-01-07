@@ -1,2 +1,5 @@
-export { voTest } from "./voTest";
-export { voConfig } from "./voConfig";
+export { nvdaTest } from "./nvdaTest";
+export type { NVDAPlaywright } from "./nvdaTest";
+export { screenReaderConfig } from "./screenReaderConfig";
+export { voiceOverTest } from "./voiceOverTest";
+export type { VoiceOverPlaywright } from "./voiceOverTest";

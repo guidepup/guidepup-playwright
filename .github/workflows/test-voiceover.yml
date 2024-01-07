@@ -24,7 +24,7 @@ jobs:
           record: true
       - run: yarn install --frozen-lockfile
       - run: yarn pretest
-      - run: yarn test:${{ matrix.browser }}
+      - run: yarn test:voiceover:${{ matrix.browser }}
       - uses: actions/upload-artifact@v3
         if: always()
         continue-on-error: true
