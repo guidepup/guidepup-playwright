@@ -5,7 +5,7 @@ const config: PlaywrightTestConfig = {
   ...screenReaderConfig,
   reportSlowTests: null,
   timeout: 5 * 60 * 1000,
-  retries: 5,
+  retries: 1,
   projects: [
     {
       name: "webkit",
