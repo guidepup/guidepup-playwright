@@ -71,7 +71,7 @@ const config: PlaywrightTestConfig = {
 export default config;
 ```
 
-Check out the configuration this adds [in the `config.ts`` file](./src/config.ts).
+Check out the configuration this adds [in the `config.ts` file](./src/config.ts).
 
 ### Web Content Navigation
 
