@@ -40,6 +40,7 @@ export interface NVDAPlaywright extends NVDA {
 const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
 
 const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
+const MAX_NAVIGATE_TO_WEB_CONTENT_RETRY_COUNT = 10;
 
 const SWITCH_APPLICATION = {
   keyCode: [WindowsKeyCodes.Tab],
@@ -120,10 +121,22 @@ export const nvdaTest = test.extend<{
         await page.locator("body").focus();
 
         // Navigate to the beginning of the web content.
-        await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.moveToFocusObject
-        );
-        await nvdaPlaywright.lastSpokenPhrase();
+        let navigateToWebContentRetryCount = 0;
+
+        while (
+          navigateToWebContentRetryCount <
+          MAX_NAVIGATE_TO_WEB_CONTENT_RETRY_COUNT
+        ) {
+          navigateToWebContentRetryCount++;
+
+          await nvdaPlaywright.next();
+
+          const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
+
+          if (lastSpokenPhrase.includes("web content")) {
+            break;
+          }
+        }
 
         await nvdaPlaywright.perform(MOVE_TO_TOP_OF_PAGE);
         await nvdaPlaywright.lastSpokenPhrase();
