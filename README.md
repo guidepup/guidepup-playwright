@@ -73,7 +73,49 @@ export default config;
 
 Check out the configuration this adds [in the `config.ts`` file](./src/config.ts).
 
-### VoiceOver
+### Web Content Navigation
+
+In addition to the Guidepup APIs the `voiceOver` and `nvda` instances provided by the Guidepup Playwright setup have an additional utility method `.navigateToWebContent()`.
+
+This method will navigate the screen reader to the first element of the document body in the browser.
+
+Use this method after you navigate to a page and have made any necessary checks that the page has loaded as expected. For example, this is how you might use the method with NVDA:
+
+```ts
+// Navigate to the desired page
+await page.goto("https://github.com/guidepup/guidepup", {
+  waitUntil: "load",
+});
+
+// Wait for page to be ready
+await page.locator('header[role="banner"]').waitFor();
+
+// Navigate to the web content
+await nvda.navigateToWebContent();
+
+// ... some commands
+```
+
+**Note:** This command clears all logs meaning `.spokenPhraseLog()` and `.itemTextLog()` are emptied. If logs from prior to the command are required, first store the logs in a variable for later use:
+
+```ts
+// ... some commands
+
+// Store spoken phrases
+const spokenPhrases = await nvda.spokenPhraseLog();
+
+// Navigate to the web content
+await nvda.navigateToWebContent();
+
+// ... some commands
+
+// Collect all spoken phrasees
+const allSpokenPhrases = [...spokenPhrases, ...(await nvda.spokenPhraseLog())];
+
+// ... do something with spoken phrases
+```
+
+### VoiceOver Example
 
 `playwright.config.ts`:
 
@@ -131,7 +173,7 @@ test.describe("Playwright VoiceOver", () => {
 });
 ```
 
-### NVDA
+### NVDA Example
 
 `playwright.config.ts`:
 

@@ -1,4 +1,4 @@
-import { Page, test } from "@playwright/test";
+import { test } from "@playwright/test";
 import { nvda, WindowsKeyCodes, WindowsModifiers } from "@guidepup/guidepup";
 import type { NVDA } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
@@ -46,12 +46,15 @@ const SWITCH_APPLICATION = {
   modifiers: [WindowsModifiers.Alt],
 };
 
+const MOVE_TO_TOP = {
+  keyCode: [WindowsKeyCodes.Home],
+  modifiers: [WindowsModifiers.Control],
+};
+
 const focusBrowser = async ({
   applicationName,
-  page,
 }: {
   applicationName: string;
-  page: Page;
 }) => {
   await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
   let windowTitle = await nvdaPlaywright.lastSpokenPhrase();
@@ -59,11 +62,6 @@ const focusBrowser = async ({
   if (windowTitle.includes(applicationName)) {
     return;
   }
-
-  // Firefox has a bug with NVDA where NVDA gets stuck in focus mode if
-  // Firefox is the currently focused application.
-  // REF: https://github.com/nvaccess/nvda/issues/5758
-  // We swap to a different application, restart NVDA, and then switch back.
 
   let applicationSwitchRetryCount = 0;
 
@@ -74,32 +72,7 @@ const focusBrowser = async ({
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
     windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
-    if (!windowTitle.includes(applicationName)) {
-      break;
-    }
-  }
-
-  await nvdaPlaywright.stop();
-  await nvdaPlaywright.start();
-  await page.bringToFront();
-
-  await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
-  windowTitle = await nvdaPlaywright.lastSpokenPhrase();
-
-  if (windowTitle.includes(applicationName)) {
-    return;
-  }
-
-  applicationSwitchRetryCount = 0;
-
-  while (applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
-    applicationSwitchRetryCount++;
-
-    await nvdaPlaywright.perform(SWITCH_APPLICATION);
-    await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
-    windowTitle = await nvdaPlaywright.lastSpokenPhrase();
-
-    if (!windowTitle.includes(applicationName)) {
+    if (windowTitle.includes(applicationName)) {
       break;
     }
   }
@@ -152,21 +125,33 @@ export const nvdaTest = test.extend<{
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode
         );
-        await nvdaPlaywright.lastSpokenPhrase();
 
         // Ensure application is brought to front and focused.
-        await focusBrowser({ applicationName, page });
+        await focusBrowser({ applicationName });
 
-        // Make sure NVDA is not in focus mode.
+        // NVDA appears to not work well with Firefox when switching between
+        // applications resulting in the entire browser window having NVDA focus
+        // with focus mode.
+        //
+        // One workaround is to tab to the next focusable item. From there we can
+        // toggle into (yes although we are already in it...) focus mode and back
+        // out. In case this ever transpires to not happen as expect, we then ensure
+        // we exit focus mode and move NVDA to the top of the page.
+        //
+        // REF: https://github.com/nvaccess/nvda/issues/5758
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.readNextFocusableItem
+        );
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode
+        );
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode
+        );
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode
         );
-        await nvdaPlaywright.lastSpokenPhrase();
-
-        // Ensure the document is ready and focused.
-        await page.bringToFront();
-        await page.locator("body").waitFor();
-        await page.locator("body").focus();
+        await nvdaPlaywright.perform(MOVE_TO_TOP);
 
         // Clear out logs.
         await nvdaPlaywright.clearItemTextLog();
