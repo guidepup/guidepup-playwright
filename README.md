@@ -1,103 +1,31 @@
-<h1 align="center">Guidepup Playwright</h1>
-<p align="center">
-  <i>Screen reader driver for Playwright tests.</i>
-</p>
-<p align="center">
-  <a href="https://www.npmjs.com/package/@guidepup/playwright"><img alt="@guidepup/playwright available on NPM" src="https://img.shields.io/npm/v/@guidepup/playwright" /></a>
-  <a href="https://www.npmjs.com/package/@guidepup/playwright"><img alt="@guidepup/playwright available on NPM" src="https://img.shields.io/npm/dt/@guidepup/playwright"></a>
-  <a href="https://github.com/guidepup/guidepup-playwright/actions/workflows/test.yml"><img alt="@guidepup/playwright test workflows" src="https://github.com/guidepup/guidepup-playwright/workflows/Test/badge.svg" /></a>
-  <a href="https://github.com/guidepup/guidepup-playwright/blob/main/LICENSE"><img alt="@guidepup/playwright uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup-playwright" /></a>
-</p>
-<p align="center">
-  Reliable automation for your screen reader a11y workflows in Playwright supporting:
-</p>
-<p align="center">
-  <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a>
-</p>
-<p align="center">
-  <b>NVDA on Windows</b> - <a href="https://github.com/guidepup/guidepup/pull/33">Coming Soon!</a>
-</p>
+# Guidepup Playwright
 
-## Intro
+<a href="https://www.npmjs.com/package/@guidepup/playwright"><img alt="@guidepup/playwright available on NPM" src="https://img.shields.io/npm/v/@guidepup/playwright" /></a>
+<a href="https://github.com/guidepup/guidepup-playwright/actions/workflows/test.yml"><img alt="@guidepup/playwright test workflows" src="https://github.com/guidepup/guidepup-playwright/workflows/Test/badge.svg" /></a>
+<a href="https://github.com/guidepup/guidepup-playwright/blob/main/LICENSE"><img alt="@guidepup/playwright uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup-playwright" /></a>
 
-A11y static analysis tools [only cover 25% of WCAG](https://karlgroves.com/web-accessibility-testing-what-can-be-tested-and-how/) and don't assure on the quality of the user experience for screen reader users. This means teams need to perform lots of manual tests with multiple screen readers to ensure great UX which can take a lot of time... **not anymore!**
+## [Documentation](https://guidepup.dev) | [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
 
-With [Guidepup](https://www.guidepup.dev/) you can automate your screen reader test workflows the same you as would for mouse or keyboard based scenarios, no sweat!
+[![MacOS Big Sur Support](https://img.shields.io/badge/macos-Big_Sur-blue.svg?logo=apple)](https://apps.apple.com/id/app/macos-big-sur/id1526878132)
+[![MacOS Monetary Support](https://img.shields.io/badge/macos-Monetary-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-monterey/id1576738294)
+[![MacOS Ventura Support](https://img.shields.io/badge/macos-Ventura-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-ventura/id1638787999)
+[![Windows 10 Support](https://img.shields.io/badge/windows-10-blue.svg?logo=windows10)](https://www.microsoft.com/en-gb/software-download/windows10ISO)
+[![Windows Server 2019 Support](https://img.shields.io/badge/windows_server-2019-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019)
+[![Windows Server 2022 Support](https://img.shields.io/badge/windows_server-2022-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022)
 
-## Quick Features
+This package provides [Guidepup](https://github.com/guidepup/guidepup) integration with [Playwright](https://playwright.dev/) for writing screen reader tests that automate <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a> and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>.
 
-- **Full Control** - if a screen reader has a keyboard command, then Guidepup supports it.
-- **Mirrors Real User Experience** - assert on what users really do and hear when using screen readers.
-- **Framework Agnostic** - run with Jest, with Playwright, as an independent script, no vendor lock-in.
+## Capabilities
+
+- **Full Control** - If a screen reader has a keyboard command, then Guidepup supports it.
+- **Mirrors Real User Experience** - Assert on what users really do and hear when using screen readers.
+- **Framework Agnostic** - Run with Jest, with Playwright, as an independent script, no vendor lock-in.
 
 ## Getting Started
 
 Set up your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
 
-```console
-npx @guidepup/setup
-```
-
-Install `@guidepup/playwright` to your project:
-
-```console
-npm install --save-dev @guidepup/playwright @guidepup/guidepup @playwright/test
-```
-
-Note: you require `@guidepup/guidepup` and `@playwright/test` as they are peer dependencies to this project.
-
-And get cracking with your first screen reader tests in Playwright!
-
-```ts
-import { voTest as test } from "@guidepup/playwright";
-import { expect } from "@playwright/test";
-
-test.describe("Playwright VoiceOver", () => {
-  test("I can navigate the Guidepup Github page", async ({
-    page,
-    voiceOver,
-  }) => {
-    // Navigate to Guidepup GitHub page
-    await page.goto("https://github.com/guidepup/guidepup", {
-      waitUntil: "domcontentloaded",
-    });
-
-    // Wait for page to be ready and interact
-    await expect(page.locator('header[role="banner"]')).toBeVisible();
-    await voiceOver.interact();
-
-    // Move across the page menu to the Guidepup heading using VoiceOver
-    while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
-      await voiceOver.perform(voiceOver.keyboard.commands.findNextHeading);
-    }
-});
-```
-
-## Playwright Config
-
-In your `playwright.config.ts` add the following for the best results with
-Guidepup for VoiceOver automation.
-
-```ts
-import { devices, PlaywrightTestConfig } from "@playwright/test";
-import { voConfig } from "@guidepup/playwright";
-
-const config: PlaywrightTestConfig = {
-  ...voConfig,
-
-  // Your custom config ...
-};
-
-export default config;
-```
-
-Check out the configuration this adds [in the voConfig.ts file](./src/voConfig.ts).
-
-## Environment Setup
-
-Set up your environment for screen-read automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
-
-```console
+```sh
 npx @guidepup/setup
 ```
 
@@ -105,23 +33,175 @@ If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action
 
 ```yaml
 - name: Setup Environment
-  uses: guidepup/setup-action@0.13.0
+  uses: guidepup/setup-action
 ```
 
-## Documentation
+Install `@guidepup/playwright` to your project:
 
-Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real world examples, environment setup, and complete Guidepup API documentation with examples.
+```sh
+npm install --save-dev @guidepup/playwright @guidepup/guidepup @playwright/test
+```
 
-## Example
+Note: you require `@guidepup/guidepup` and `@playwright/test` as they are peer dependencies to this project.
 
-Check out [this cross-browser VoiceOver example](./example/).
+And get cracking with your first screen reader tests in Playwright!
 
-## See Also
+## Examples
 
-Checkout the core [`@guidepup/guidepup`](https://github.com/guidepup/guidepup)
-project to learn more about how you can automate your screen reader workflows
-using Guidepup.
+Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real world examples, environment setup, and complete API documentation with examples.
 
-## License
+You can also check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup with Playwright in your projects.
 
-[MIT](https://github.com/guidepup/guidepup/blob/main/LICENSE)
+Alternatively check out [this project](https://github.com/guidepup/aria-at-tests) which runs several thousand tests to assert screen reader compatibility against [W3C ARIA-AT](https://github.com/w3c/aria-at) test suite.
+
+### Playwright Config
+
+In your `playwright.config.ts` add the following for the best results with Guidepup for Screen Reader automation:
+
+```ts
+import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { screenReaderConfig } from "@guidepup/playwright";
+
+const config: PlaywrightTestConfig = {
+  ...screenReaderConfig,
+
+  // ... your custom config
+};
+
+export default config;
+```
+
+Check out the configuration this adds [in the `config.ts`` file](./src/config.ts).
+
+### VoiceOver
+
+`playwright.config.ts`:
+
+```ts
+import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { screenReaderConfig } from "@guidepup/playwright";
+
+const config: PlaywrightTestConfig = {
+  ...screenReaderConfig,
+  reportSlowTests: null,
+  timeout: 5 * 60 * 1000,
+  retries: 2,
+  projects: [
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"], headless: false },
+    },
+  ],
+};
+
+export default config;
+```
+
+`voiceOver.spec.ts`:
+
+```ts
+import { voiceOverTest as test } from "@guidepup/playwright";
+import { expect } from "@playwright/test";
+
+test.describe("Playwright VoiceOver", () => {
+  test("I can navigate the Guidepup Github page with VoiceOver", async ({
+    page,
+    voiceOver,
+  }) => {
+    // Navigate to Guidepup GitHub page
+    await page.goto("https://github.com/guidepup/guidepup", {
+      waitUntil: "load",
+    });
+
+    // Wait for page to be ready
+    const header = page.locator('header[role="banner"]');
+    await header.waitFor();
+
+    // Interact with the page
+    await voiceOver.interact();
+    await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
+
+    // Move across the page menu to the Guidepup heading using VoiceOver
+    while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
+      await voiceOver.perform(voiceOver.keyboardCommands.findNextHeading);
+    }
+
+    // Assert that the spoken phrases are as expected
+    expect(JSON.stringify(await voiceOver.spokenPhraseLog())).toMatchSnapshot();
+  });
+});
+```
+
+### NVDA
+
+`playwright.config.ts`:
+
+```ts
+import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { screenReaderConfig } from "@guidepup/playwright";
+
+const config: PlaywrightTestConfig = {
+  ...screenReaderConfig,
+  reportSlowTests: null,
+  timeout: 5 * 60 * 1000,
+  retries: 2,
+  projects: [
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"], headless: false },
+    },
+  ],
+};
+
+export default config;
+```
+
+`nvda.spec.ts`:
+
+```ts
+import { nvdaTest as test } from "@guidepup/playwright";
+import { expect } from "@playwright/test";
+
+test.describe("Playwright NVDA", () => {
+  test("I can navigate the Guidepup Github page with NVDA", async ({
+    page,
+    nvda,
+  }) => {
+    // Navigate to Guidepup GitHub page
+    await page.goto("https://github.com/guidepup/guidepup", {
+      waitUntil: "load",
+    });
+
+    // Wait for page to be ready and setup
+    const header = page.locator('header[role="banner"]');
+    await header.waitFor();
+    await page.locator("a").first().focus();
+    await nvda.perform(nvda.keyboardCommands.exitFocusMode);
+
+    // Move across the page menu to the Guidepup heading using NVDA
+    while ((await nvda.itemText()) !== "Guidepup heading level 1") {
+      await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
+    }
+
+    // Assert that the spoken phrases are as expected
+    expect(JSON.stringify(await nvda.spokenPhraseLog())).toMatchSnapshot();
+  });
+});
+```
+
+## Powerful Tooling
+
+Check out some of the other Guidepup modules:
+
+- [`@guidepup/guidepup`](https://github.com/guidepup/guidepup/) - Reliable automation for your screen reader a11y workflows through JavaScript supporting VoiceOver and NVDA.
+- [`@guidepup/setup`](https://github.com/guidepup/setup/) - Set up your local or CI environment for screen reader test automation.
+- [`@guidepup/virtual-screen-reader`](https://github.com/guidepup/virtual-screen-reader/) - Reliable unit testing for your screen reader a11y workflows.
+- [`@guidepup/jest`](https://github.com/guidepup/jest/) - Jest matchers for reliable unit testing of your screen reader a11y workflows.
+
+## Resources
+
+- [Documentation](https://www.guidepup.dev/docs/example)
+- [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
+- [Contributing](.github/CONTRIBUTING.md)
+- [Changelog](https://github.com/guidepup/guidepup-playwright/releases)
+- [MIT License](https://github.com/guidepup/guidepup-playwright/blob/main/LICENSE)

@@ -1,29 +1,30 @@
 import { test } from "@playwright/test";
 import { voiceOver, macOSActivate } from "@guidepup/guidepup";
 import type { VoiceOver } from "@guidepup/guidepup";
-
-const applicationNameMap = {
-  chromium: "Chromium",
-  chrome: "Google Chrome",
-  "chrome-beta": "Google Chrome Beta",
-  msedge: "Microsoft Edge",
-  "msedge-beta": "Microsoft Edge Beta",
-  "msedge-dev": "Microsoft Edge Dev",
-  firefox: "Nightly",
-  webkit: "Playwright",
-};
+import { applicationNameMap } from "./applicationNameMap";
 
 /**
  * These tests extend the default Playwright environment that launches the
  * browser with a running instance of the VoiceOver screen reader for MacOS.
  *
- * A fresh started VoiceOver instance `vo` is provided to each test.
+ * A fresh started VoiceOver instance `voiceOver` is provided to each test.
  */
-const voTest = test.extend<{ voiceOver: VoiceOver }>({
+export const voiceOverTest = test.extend<{ voiceOver: VoiceOver }>({
   voiceOver: async ({ browserName }, use) => {
     try {
+      const applicationName = applicationNameMap[browserName];
+
+      if (!applicationName) {
+        throw new Error(`Browser ${browserName} is not installed.`);
+      }
+
       await voiceOver.start();
-      await macOSActivate(applicationNameMap[browserName]);
+
+      await macOSActivate(applicationName);
+
+      await voiceOver.clearItemTextLog();
+      await voiceOver.clearSpokenPhraseLog();
+
       await use(voiceOver);
     } finally {
       try {
@@ -34,5 +35,3 @@ const voTest = test.extend<{ voiceOver: VoiceOver }>({
     }
   },
 });
-
-export { voTest };

@@ -1,15 +1,15 @@
 import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { screenReaderConfig } from "../../src";
 
 const config: PlaywrightTestConfig = {
+  ...screenReaderConfig,
   reportSlowTests: null,
-  fullyParallel: false,
-  workers: 1,
   timeout: 5 * 60 * 1000,
   retries: 5,
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"], headless: false, video: "on" },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"], headless: false },
     },
   ],
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
