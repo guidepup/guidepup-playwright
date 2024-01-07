@@ -117,7 +117,7 @@ export const nvdaTest = test.extend<{
 
         // Make sure NVDA is not in focus mode.
         await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.exitFocusMode
+          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode
         );
         await nvdaPlaywright.lastSpokenPhrase();
 
@@ -143,12 +143,6 @@ export const nvdaTest = test.extend<{
             break;
           }
         }
-
-        // Make sure NVDA is not in focus mode.
-        await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.exitFocusMode
-        );
-        await nvdaPlaywright.lastSpokenPhrase();
 
         await nvdaPlaywright.perform(MOVE_TO_TOP_OF_PAGE);
         await nvdaPlaywright.lastSpokenPhrase();
