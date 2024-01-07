@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { Page, test } from "@playwright/test";
 import { nvda, WindowsKeyCodes, WindowsModifiers } from "@guidepup/guidepup";
 import type { NVDA } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
@@ -46,12 +46,21 @@ const SWITCH_APPLICATION = {
   modifiers: [WindowsModifiers.Alt],
 };
 
-const switchApplications = async ({
+const focusBrowser = async ({
   applicationName,
+  page,
 }: {
   applicationName: string;
+  page: Page;
 }) => {
-  // Firefox has a bug with NVDA where NVDA get's stuck in focus mode if
+  await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
+  let windowTitle = await nvdaPlaywright.lastSpokenPhrase();
+
+  if (windowTitle.includes(applicationName)) {
+    return;
+  }
+
+  // Firefox has a bug with NVDA where NVDA gets stuck in focus mode if
   // Firefox is the currently focused application.
   // REF: https://github.com/nvaccess/nvda/issues/5758
   // We swap to a different application, restart NVDA, and then switch back.
@@ -62,15 +71,24 @@ const switchApplications = async ({
     applicationSwitchRetryCount++;
 
     await nvdaPlaywright.perform(SWITCH_APPLICATION);
-    const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
+    await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
+    windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
-    if (!lastSpokenPhrase.includes(applicationName)) {
+    if (!windowTitle.includes(applicationName)) {
       break;
     }
   }
 
   await nvdaPlaywright.stop();
   await nvdaPlaywright.start();
+  await page.bringToFront();
+
+  await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
+  windowTitle = await nvdaPlaywright.lastSpokenPhrase();
+
+  if (windowTitle.includes(applicationName)) {
+    return;
+  }
 
   applicationSwitchRetryCount = 0;
 
@@ -78,9 +96,10 @@ const switchApplications = async ({
     applicationSwitchRetryCount++;
 
     await nvdaPlaywright.perform(SWITCH_APPLICATION);
-    const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
+    await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
+    windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
-    if (lastSpokenPhrase.includes(applicationName)) {
+    if (!windowTitle.includes(applicationName)) {
       break;
     }
   }
@@ -133,16 +152,7 @@ export const nvdaTest = test.extend<{
         await nvdaPlaywright.lastSpokenPhrase();
 
         // Ensure application is brought to front and focused.
-        await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.reportTitle
-        );
-        const windowTitle = await nvdaPlaywright.lastSpokenPhrase();
-
-        console.log({ windowTitle });
-
-        if (!windowTitle.includes(applicationName)) {
-          await switchApplications({ applicationName });
-        }
+        await focusBrowser({ applicationName, page });
 
         // Make sure NVDA is not in focus mode.
         await nvdaPlaywright.perform(
