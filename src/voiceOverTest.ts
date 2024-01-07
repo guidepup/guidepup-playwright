@@ -93,6 +93,9 @@ export const voiceOverTest = test.extend<{
         await page.locator("body").focus();
 
         // Navigate to the beginning of the web content.
+        await voiceOverPlaywright.interact();
+        await voiceOverPlaywright.lastSpokenPhrase();
+
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.jumpToLeftEdge
         );
