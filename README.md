@@ -118,8 +118,7 @@ test.describe("Playwright VoiceOver", () => {
     await header.waitFor();
 
     // Interact with the page
-    await voiceOver.interact();
-    await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
+    await voiceOver.navigateToWebContent();
 
     // Move across the page menu to the Guidepup heading using VoiceOver
     while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
@@ -175,11 +174,14 @@ test.describe("Playwright NVDA", () => {
     // Wait for page to be ready and setup
     const header = page.locator('header[role="banner"]');
     await header.waitFor();
-    await page.locator("a").first().focus();
-    await nvda.perform(nvda.keyboardCommands.exitFocusMode);
+
+    // Interact with the page
+    await nvda.navigateToWebContent();
 
     // Move across the page menu to the Guidepup heading using NVDA
-    while ((await nvda.itemText()) !== "Guidepup heading level 1") {
+    while (
+      !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
+    ) {
       await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
     }
 

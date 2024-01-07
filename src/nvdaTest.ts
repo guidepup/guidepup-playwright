@@ -4,12 +4,84 @@ import type { NVDA } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
 
 /**
+ * [API Reference](https://www.guidepup.dev/docs/api/class-nvda)
+ *
+ * This object can be used to launch and control NVDA.
+ *
+ * Here's a typical example:
+ *
+ * ```ts
+ * import { nvda } from "@guidepup/guidepup";
+ *
+ * (async () => {
+ *   // Start NVDA.
+ *   await nvda.start();
+ *
+ *   // Move to the next item.
+ *   await nvda.next();
+ *
+ *   // Stop NVDA.
+ *   await nvda.stop();
+ * })();
+ * ```
+ */
+export interface NVDAPlaywright extends NVDA {
+  /**
+   * Guidepup Playwright specific command that navigates NVDA to the beginning
+   * of the browser's web content.
+   *
+   * This command should be used after page navigation.
+   *
+   * Note: this command clears all logs.
+   */
+  navigateToWebContent(): Promise<void>;
+}
+
+const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
+
+const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
+
+const SWITCH_APPLICATION = {
+  keyCode: [WindowsKeyCodes.Tab],
+  modifiers: [WindowsModifiers.Alt],
+};
+
+const MOVE_TO_TOP_OF_PAGE = {
+  keyCode: [WindowsKeyCodes.Home],
+  modifiers: [WindowsModifiers.Control],
+};
+
+/**
  * These tests extend the default Playwright environment that launches the
  * browser with a running instance of the NVDA screen reader for Windows.
  *
  * A fresh started NVDA instance `nvda` is provided to each test.
  */
-export const nvdaTest = test.extend<{ nvda: NVDA }>({
+export const nvdaTest = test.extend<{
+  /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-nvda)
+   *
+   * This object can be used to launch and control NVDA.
+   *
+   * Here's a typical example:
+   *
+   * ```ts
+   * import { nvda } from "@guidepup/guidepup";
+   *
+   * (async () => {
+   *   // Start NVDA.
+   *   await nvda.start();
+   *
+   *   // Move to the next item.
+   *   await nvda.next();
+   *
+   *   // Stop NVDA.
+   *   await nvda.stop();
+   * })();
+   * ```
+   */
+  nvda: NVDAPlaywright;
+}>({
   nvda: async ({ browserName, page }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
@@ -18,39 +90,47 @@ export const nvdaTest = test.extend<{ nvda: NVDA }>({
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      await nvda.start();
+      nvdaPlaywright.navigateToWebContent = async () => {
+        // Ensure application is brought to front and focused.
+        let applicationSwitchRetryCount = 0;
 
-      // Make sure the browser window is focused.
-      await page.goto("about:blank", { waitUntil: "load" });
+        while (
+          applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT
+        ) {
+          applicationSwitchRetryCount++;
 
-      let applicationSwitchRetryCount = 0;
+          await nvdaPlaywright.perform(SWITCH_APPLICATION);
 
-      while (applicationSwitchRetryCount < 10) {
-        applicationSwitchRetryCount++;
+          const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
 
-        await nvda.perform({
-          keyCode: [WindowsKeyCodes.Tab],
-          modifiers: [WindowsModifiers.Alt],
-        });
-
-        const lastSpokenPhrase = await nvda.lastSpokenPhrase();
-
-        if (lastSpokenPhrase.includes(applicationName)) {
-          break;
+          if (lastSpokenPhrase.includes(applicationName)) {
+            break;
+          }
         }
-      }
 
-      // Make sure not in focus mode.
-      await nvda.perform(nvda.keyboardCommands.exitFocusMode);
+        // Ensure the document is ready and focused.
+        await page.locator("body").waitFor();
+        await page.locator("body").focus();
 
-      // Clear the logs.
-      await nvda.clearItemTextLog();
-      await nvda.clearSpokenPhraseLog();
+        // Make sure NVDA is not in focus mode.
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.exitFocusMode
+        );
 
-      await use(nvda);
+        // Navigate to the beginning of the web content.
+        await nvdaPlaywright.perform(MOVE_TO_TOP_OF_PAGE);
+
+        // Clear out logs.
+        await nvdaPlaywright.clearItemTextLog();
+        await nvdaPlaywright.clearSpokenPhraseLog();
+      };
+
+      await nvdaPlaywright.start();
+
+      await use(nvdaPlaywright);
     } finally {
       try {
-        await nvda.stop();
+        await nvdaPlaywright.stop();
       } catch {
         // swallow stop failure
       }

@@ -1,7 +1,6 @@
-import type { VoiceOver } from "@guidepup/guidepup";
 import { Page } from "@playwright/test";
-import { delay } from "../../delay";
 import { log } from "../../log";
+import type { VoiceOverPlaywright } from "../../../src";
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -10,7 +9,7 @@ export async function headerNavigation({
   voiceOver,
 }: {
   page: Page;
-  voiceOver: VoiceOver;
+  voiceOver: VoiceOverPlaywright;
 }) {
   // Navigate to Guidepup GitHub page
   log("Navigating to URL: https://github.com/guidepup/guidepup.");
@@ -21,17 +20,9 @@ export async function headerNavigation({
   // Wait for page to be ready and interact
   const header = page.locator('header[role="banner"]');
   await header.waitFor();
-  await delay(500);
 
   // Make sure interacting with the web content
-  log(`Performing command: "VO+Shift+Down Arrow"`);
-  await voiceOver.interact();
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
-
-  // Prevent auto-navigation of group
-  log(`Performing command: "VO+Shift+Left Arrow"`);
-  await voiceOver.perform(voiceOver.keyboardCommands.jumpToLeftEdge);
-  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+  await voiceOver.navigateToWebContent();
 
   let headingCount = 0;
 
