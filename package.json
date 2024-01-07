@@ -52,7 +52,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@guidepup/guidepup": "^0.21.0",
+    "@guidepup/guidepup": "^0.22.0",
     "@playwright/test": "^1.29.2"
   },
   "resolutions": {
