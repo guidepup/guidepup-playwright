@@ -146,7 +146,6 @@ export const nvdaTest = test.extend<{
 
       await page.goto("about:blank", { waitUntil: "load" });
       await page.bringToFront();
-      await page.close();
 
       nvdaPlaywright.navigateToWebContent = async () => {
         // Make sure NVDA is not in focus mode.
