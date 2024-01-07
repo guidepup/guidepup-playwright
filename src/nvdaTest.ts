@@ -40,16 +40,31 @@ export interface NVDAPlaywright extends NVDA {
 const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
 
 const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
-const MAX_NAVIGATE_TO_WEB_CONTENT_RETRY_COUNT = 10;
 
 const SWITCH_APPLICATION = {
   keyCode: [WindowsKeyCodes.Tab],
   modifiers: [WindowsModifiers.Alt],
 };
 
-const MOVE_TO_TOP_OF_PAGE = {
-  keyCode: [WindowsKeyCodes.Home],
-  modifiers: [WindowsModifiers.Control],
+const switchApplications = async ({
+  applicationName,
+}: {
+  applicationName: string;
+}) => {
+  // Ensure application is brought to front and focused.
+  let applicationSwitchRetryCount = 0;
+
+  while (applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
+    applicationSwitchRetryCount++;
+
+    await nvdaPlaywright.perform(SWITCH_APPLICATION);
+
+    const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
+
+    if (lastSpokenPhrase.includes(applicationName)) {
+      break;
+    }
+  }
 };
 
 /**
@@ -99,25 +114,19 @@ export const nvdaTest = test.extend<{
         await nvdaPlaywright.lastSpokenPhrase();
 
         // Ensure application is brought to front and focused.
-        let applicationSwitchRetryCount = 0;
+        await nvdaPlaywright.perform(
+          nvdaPlaywright.keyboardCommands.reportTitle
+        );
 
-        while (
-          applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT
+        if (
+          !(await nvdaPlaywright.lastSpokenPhrase()).includes(applicationName)
         ) {
-          applicationSwitchRetryCount++;
-
-          await nvdaPlaywright.perform(SWITCH_APPLICATION);
-
-          const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
-
-          if (lastSpokenPhrase.includes(applicationName)) {
-            break;
-          }
+          await switchApplications({ applicationName });
         }
 
         // Make sure NVDA is not in focus mode.
         await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode
+          nvdaPlaywright.keyboardCommands.exitFocusMode
         );
         await nvdaPlaywright.lastSpokenPhrase();
 
@@ -125,27 +134,6 @@ export const nvdaTest = test.extend<{
         await page.bringToFront();
         await page.locator("body").waitFor();
         await page.locator("body").focus();
-
-        // Navigate to the beginning of the web content.
-        let navigateToWebContentRetryCount = 0;
-
-        while (
-          navigateToWebContentRetryCount <
-          MAX_NAVIGATE_TO_WEB_CONTENT_RETRY_COUNT
-        ) {
-          navigateToWebContentRetryCount++;
-
-          await nvdaPlaywright.next();
-
-          const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
-
-          if (lastSpokenPhrase.includes("web content")) {
-            break;
-          }
-        }
-
-        await nvdaPlaywright.perform(MOVE_TO_TOP_OF_PAGE);
-        await nvdaPlaywright.lastSpokenPhrase();
 
         // Clear out logs.
         await nvdaPlaywright.clearItemTextLog();
