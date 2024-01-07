@@ -33,7 +33,7 @@ export async function headerNavigation({
   ) {
     headingCount++;
 
-    log(`Performing command: "VO+Command+H"`);
+    log(`Performing command: "H"`);
     await nvda.perform(nvda.keyboardCommands.moveToNextHeading);
     log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
   }
