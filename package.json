@@ -53,7 +53,7 @@
   },
   "peerDependencies": {
     "@guidepup/guidepup": "^0.22.0",
-    "@playwright/test": "^1.29.2"
+    "@playwright/test": "^1.40.1"
   },
   "resolutions": {
     "strip-ansi": "6.0.1",
