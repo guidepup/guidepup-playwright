@@ -42,7 +42,7 @@ const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
 const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
 
 const SWITCH_APPLICATION = {
-  keyCode: [WindowsKeyCodes.Tab],
+  keyCode: [WindowsKeyCodes.Escape],
   modifiers: [WindowsModifiers.Alt],
 };
 
@@ -143,6 +143,10 @@ export const nvdaTest = test.extend<{
       if (!applicationName) {
         throw new Error(`Browser ${browserName} is not installed.`);
       }
+
+      await page.goto("about:blank", { waitUntil: "load" });
+      await page.bringToFront();
+      await page.close();
 
       nvdaPlaywright.navigateToWebContent = async () => {
         // Make sure NVDA is not in focus mode.
