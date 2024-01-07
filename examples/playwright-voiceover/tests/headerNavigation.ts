@@ -33,8 +33,17 @@ export async function headerNavigation({
   ) {
     headingCount++;
 
-    log(`Performing command: "VO+Command+H"`);
+    // Navigate to the next heading
+    log(`Performing command: "VO+Command+H" - "Find the next heading"`);
     await voiceOver.perform(voiceOver.keyboardCommands.findNextHeading);
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+    // Describe the item in the VoiceOver cursor as it can sometimes skip part
+    // of the spoken phrase if interrupted.
+    log(
+      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`
+    );
+    await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
     log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
   }
 }

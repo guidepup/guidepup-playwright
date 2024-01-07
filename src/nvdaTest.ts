@@ -57,16 +57,18 @@ const switchApplications = async ({
   while (applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
     applicationSwitchRetryCount++;
 
-    console.log("alt+tab");
     await nvdaPlaywright.perform(SWITCH_APPLICATION);
-
     const lastSpokenPhrase = await nvdaPlaywright.lastSpokenPhrase();
-    console.log(lastSpokenPhrase);
 
     if (lastSpokenPhrase.includes(applicationName)) {
       break;
     }
   }
+
+  // Firefox has a bug with NVDA where get's stuck in focus mode, so we restart
+  // NVDA.
+  await nvdaPlaywright.stop();
+  await nvdaPlaywright.start();
 };
 
 /**
@@ -110,30 +112,26 @@ export const nvdaTest = test.extend<{
 
       nvdaPlaywright.navigateToWebContent = async () => {
         // Make sure NVDA is not in focus mode.
-        console.log("exitFocusMode");
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode
         );
-        console.log(await nvdaPlaywright.lastSpokenPhrase());
+        await nvdaPlaywright.lastSpokenPhrase();
 
         // Ensure application is brought to front and focused.
-        console.log("reportTitle");
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.reportTitle
         );
         const windowTitle = await nvdaPlaywright.lastSpokenPhrase();
-        console.log(windowTitle);
 
         if (!windowTitle.includes(applicationName)) {
           await switchApplications({ applicationName });
         }
 
         // Make sure NVDA is not in focus mode.
-        console.log("exitFocusMode");
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode
         );
-        console.log(await nvdaPlaywright.lastSpokenPhrase());
+        await nvdaPlaywright.lastSpokenPhrase();
 
         // Ensure the document is ready and focused.
         await page.bringToFront();

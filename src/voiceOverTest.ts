@@ -85,25 +85,21 @@ export const voiceOverTest = test.extend<{
 
       voiceOverPlaywright.navigateToWebContent = async () => {
         // Ensure application is brought to front and focused.
-        console.log("activate");
         await macOSActivate(applicationName);
 
         // Ensure the document is ready and focused.
-        console.log("bringToFront");
         await page.bringToFront();
         await page.locator("body").waitFor();
         await page.locator("body").focus();
 
         // Navigate to the beginning of the web content.
-        console.log("interact");
         await voiceOverPlaywright.interact();
-        console.log(await voiceOverPlaywright.lastSpokenPhrase());
+        await voiceOverPlaywright.lastSpokenPhrase();
 
-        console.log("jumpToLeftEdge");
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.jumpToLeftEdge
         );
-        console.log(await voiceOverPlaywright.lastSpokenPhrase());
+        await voiceOverPlaywright.lastSpokenPhrase();
 
         // Clear out logs.
         await voiceOverPlaywright.clearItemTextLog();
