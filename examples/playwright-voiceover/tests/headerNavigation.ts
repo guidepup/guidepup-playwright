@@ -11,14 +11,14 @@ export async function headerNavigation({
   page: Page;
   voiceOver: VoiceOverPlaywright;
 }) {
-  // Navigate to Guidepup GitHub page
-  log("Navigating to URL: https://github.com/guidepup/guidepup.");
-  await page.goto("https://github.com/guidepup/guidepup", {
+  // Navigate to Guidepup Website 🎉
+  log("Navigating to URL: https://www.guidepup.dev.");
+  await page.goto("https://www.guidepup.dev", {
     waitUntil: "load",
   });
 
-  // Wait for page to be ready and interact
-  const header = page.locator('header[role="banner"]');
+  // Wait for page to be ready and interact 🙌
+  const header = page.locator("h1");
   await header.waitFor();
 
   // Make sure interacting with the web content
@@ -26,9 +26,9 @@ export async function headerNavigation({
 
   let headingCount = 0;
 
-  // Move across the page menu to the Guidepup heading using VoiceOver
+  // Move across the headings using VoiceOver 🔎
   while (
-    (await voiceOver.itemText()) !== "Guidepup heading level 1" &&
+    !(await voiceOver.itemText()).includes("Framework Agnostic") &&
     headingCount <= MAX_NAVIGATION_LOOP
   ) {
     headingCount++;
