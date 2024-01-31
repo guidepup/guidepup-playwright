@@ -2,6 +2,10 @@ import { Page } from "@playwright/test";
 import { log } from "../../log";
 import type { NVDAPlaywright } from "../../../src";
 
+async function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 const MAX_NAVIGATION_LOOP = 10;
 
 export async function headerNavigation({
@@ -20,9 +24,11 @@ export async function headerNavigation({
   // Wait for page to be ready and interact 🙌
   const header = page.locator("h1");
   await header.waitFor();
+  await delay(500);
 
   // Make sure interacting with the web content
   await nvda.navigateToWebContent();
+  await delay(500);
 
   let headingCount = 0;
 
