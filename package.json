@@ -39,7 +39,7 @@
     "test:voiceover:webkit": "playwright test --config ./examples/playwright-voiceover/webkit.config.ts ./examples/playwright-voiceover/tests/webkit/"
   },
   "devDependencies": {
-    "@guidepup/guidepup": "^0.22.0",
+    "@guidepup/guidepup": "^0.22.1",
     "@playwright/test": "^1.41.1",
     "@types/node": "^20.11.15",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
@@ -52,7 +52,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "@guidepup/guidepup": "^0.22.0",
+    "@guidepup/guidepup": "^0.22.1",
     "@playwright/test": "^1.40.1"
   },
   "resolutions": {
