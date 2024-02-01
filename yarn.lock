@@ -56,10 +56,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.56.0.tgz#ef20350fec605a7f7035a01764731b2de0f3782b"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
-"@guidepup/guidepup@^0.22.0":
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.22.0.tgz#f3fc757c1f40dcf8920027c5dfeff2486a589686"
-  integrity sha512-AOXe7WaFdeY3Dwr/CKrq0aS6TAor9Jq8nz550i740z9yD3DqpJkEW4hYoU5HinbsMNGK2Iqzv5AcFfJixEiPoQ==
+"@guidepup/guidepup@^0.22.1":
+  version "0.22.1"
+  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.22.1.tgz#05a43570fc6bd987c24b3c3103158725a2e77a70"
+  integrity sha512-vf2uH+l6TAWBANGg4bQXommwFDnY4XoqPbuqDi338vBPiqoXLqkLAP0kOt4SBL76NEHbO8Gz2y8xtlm29hS6/Q==
   dependencies:
     ffmpeg-static "^5.2.0"
     regedit "5.1.2"
