@@ -40,15 +40,15 @@
   },
   "devDependencies": {
     "@guidepup/guidepup": "^0.22.0",
-    "@playwright/test": "^1.40.1",
-    "@types/node": "^20.10.6",
-    "@typescript-eslint/eslint-plugin": "^6.18.0",
-    "@typescript-eslint/parser": "^6.18.0",
+    "@playwright/test": "^1.41.1",
+    "@types/node": "^20.11.15",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.25.6",
+    "typedoc": "^0.25.7",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
