@@ -30,12 +30,7 @@ test.describe("Webkit Playwright VoiceOver", () => {
     let stopRecording: (() => void) | undefined;
 
     try {
-      const isMacOSVentura =
-        osName === "darwin" && osVersion.split(".")[0] === "22";
-
-      if (!isMacOSVentura) {
-        stopRecording = macOSRecord(recordingFilePath);
-      }
+      stopRecording = macOSRecord(recordingFilePath);
 
       await headerNavigation({ page, voiceOver });
 
