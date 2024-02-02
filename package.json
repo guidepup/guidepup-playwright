@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Screen reader driver for Playwright tests.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -16,10 +16,13 @@
   "homepage": "https://github.com/guidepup/guidepup-playwright",
   "keywords": [
     "playwright",
+    "screen reader",
     "screen-reader",
     "accessibility",
     "a11y",
-    "voiceover"
+    "voiceover",
+    "nvda",
+    "guidepup"
   ],
   "scripts": {
     "build": "yarn clean && yarn compile",
