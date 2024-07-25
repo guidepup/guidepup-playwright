@@ -122,6 +122,7 @@ export const nvdaTest = test.extend<{
    */
   nvdaStartOptions: CaptureCommandOptions;
 }>({
+  nvdaStartOptions: {},
   nvda: async ({ browserName, page, nvdaStartOptions }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
