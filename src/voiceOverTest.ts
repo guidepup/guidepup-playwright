@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
 import { voiceOver, macOSActivate } from "@guidepup/guidepup";
-import type { VoiceOver } from "@guidepup/guidepup";
+import type { CommandOptions, VoiceOver } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
 
 /**
@@ -74,8 +74,15 @@ export const voiceOverTest = test.extend<{
    * ```
    */
   voiceOver: VoiceOverPlaywright;
+  /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-command-options)
+   *
+   * Options to start VoiceOver with, see also [voiceOver.start([options])](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-start).
+   */
+  voiceOverStartOptions: CommandOptions;
 }>({
-  voiceOver: async ({ browserName, page }, use) => {
+  voiceOverStartOptions: {},
+  voiceOver: async ({ browserName, page, voiceOverStartOptions }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
 
@@ -103,7 +110,7 @@ export const voiceOverTest = test.extend<{
         await voiceOverPlaywright.clearSpokenPhraseLog();
       };
 
-      await voiceOverPlaywright.start();
+      await voiceOverPlaywright.start(voiceOverStartOptions);
       await macOSActivate(applicationName);
       await use(voiceOverPlaywright);
     } finally {

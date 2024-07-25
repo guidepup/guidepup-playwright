@@ -6,6 +6,8 @@ import { macOSRecord } from "@guidepup/guidepup";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { voiceOverTest as test } from "../../../../src";
 
+test.use({ voiceOverStartOptions: { capture: "initial" } });
+
 test.describe("Firefox Playwright VoiceOver", () => {
   test("I can navigate the Guidepup Github page", async ({
     browser,
