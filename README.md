@@ -110,10 +110,28 @@ await nvda.navigateToWebContent();
 
 // ... some commands
 
-// Collect all spoken phrasees
+// Collect all spoken phrases
 const allSpokenPhrases = [...spokenPhrases, ...(await nvda.spokenPhraseLog())];
 
 // ... do something with spoken phrases
+```
+
+### Providing Screen Reader Start Options
+
+The options provided to `nvda.start([options])` or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
+
+```ts
+// VoiceOver Example
+import { voiceOverTest as test } from "@guidepup/playwright";
+
+test.use({ voiceOverStartOptions: { capture: "initial" } });
+```
+
+```ts
+// NVDA Example
+import { nvdaTest as test } from "@guidepup/playwright";
+
+test.use({ nvdaStartOptions: { capture: "initial" } });
 ```
 
 ### VoiceOver Example

@@ -1,7 +1,14 @@
 import { test } from "@playwright/test";
 import { nvda, WindowsKeyCodes, WindowsModifiers } from "@guidepup/guidepup";
-import type { NVDA } from "@guidepup/guidepup";
+import type { CommandOptions, NVDA } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
+
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+  // eslint-disable-next-line @typescript-eslint/ban-types
+} & {};
+
+type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-nvda)
@@ -108,8 +115,14 @@ export const nvdaTest = test.extend<{
    * ```
    */
   nvda: NVDAPlaywright;
+  /**
+   * [API Reference](https://www.guidepup.dev/docs/api/class-command-options)
+   *
+   * Options to start NVDA with, see also [nvda.start([options])](https://www.guidepup.dev/docs/api/class-nvda#nvda-start).
+   */
+  nvdaStartOptions: CaptureCommandOptions;
 }>({
-  nvda: async ({ browserName, page }, use) => {
+  nvda: async ({ browserName, page, nvdaStartOptions }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
 
@@ -158,7 +171,7 @@ export const nvdaTest = test.extend<{
         await nvdaPlaywright.clearSpokenPhraseLog();
       };
 
-      await nvdaPlaywright.start();
+      await nvdaPlaywright.start(nvdaStartOptions);
 
       await use(nvdaPlaywright);
     } finally {

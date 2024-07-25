@@ -5,6 +5,8 @@ import { windowsRecord } from "@guidepup/guidepup";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
 import { nvdaTest as test } from "../../../../src";
 
+test.use({ nvdaStartOptions: { capture: "initial" } });
+
 test.describe("Chromium Playwright NVDA", () => {
   test("I can navigate the Guidepup Github page", async ({
     browser,
