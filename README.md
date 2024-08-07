@@ -19,7 +19,6 @@ This package provides [Guidepup](https://github.com/guidepup/guidepup) integrati
 
 - **Full Control** - If a screen reader has a keyboard command, then Guidepup supports it.
 - **Mirrors Real User Experience** - Assert on what users really do and hear when using screen readers.
-- **Framework Agnostic** - Run with Jest, with Playwright, as an independent script, no vendor lock-in.
 
 ## Getting Started
 
