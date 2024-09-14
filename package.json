@@ -42,17 +42,18 @@
     "test:voiceover:webkit": "playwright test --config ./examples/playwright-voiceover/webkit.config.ts ./examples/playwright-voiceover/tests/webkit/"
   },
   "devDependencies": {
-    "@guidepup/guidepup": "^0.22.1",
-    "@playwright/test": "^1.41.1",
-    "@types/node": "^20.11.15",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
+    "@guidepup/guidepup": "^0.24.0",
+    "@guidepup/record": "^0.1.0",
+    "@playwright/test": "^1.47.1",
+    "@types/node": "^22.5.5",
+    "@typescript-eslint/eslint-plugin": "^8.5.0",
+    "@typescript-eslint/parser": "^8.5.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.25.7",
-    "typescript": "^5.3.3"
+    "typedoc": "^0.26.7",
+    "typescript": "^5.6.2"
   },
   "peerDependencies": {
     "@guidepup/guidepup": "^0.22.1",

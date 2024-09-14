@@ -2,7 +2,7 @@ import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./firefox.itemText.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import { macOSRecord } from "@guidepup/guidepup";
+import { macOSRecord } from "@guidepup/record";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { voiceOverTest as test } from "../../../../src";
 

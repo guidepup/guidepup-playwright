@@ -1,7 +1,7 @@
 import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import { windowsRecord } from "@guidepup/guidepup";
+import { windowsRecord } from "@guidepup/record";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { nvdaTest as test } from "../../../../src";
 
