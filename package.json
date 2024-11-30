@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "Screen reader driver for Playwright tests.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -56,7 +56,7 @@
     "typescript": "^5.6.2"
   },
   "peerDependencies": {
-    "@guidepup/guidepup": "^0.22.1",
+    "@guidepup/guidepup": ">=0.22.1",
     "@playwright/test": "^1.40.1"
   },
   "resolutions": {
