@@ -69,10 +69,10 @@
     "@shikijs/types" "^3.19.0"
     "@shikijs/vscode-textmate" "^10.0.2"
 
-"@guidepup/guidepup@^0.24.0":
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.24.0.tgz#5739815d1979768afc4c6f128a4ac35c03ad4617"
-  integrity sha512-bbbcJPbZ01Zkxi+L51R4iI7iZ3b2ax3SocqAF0hCgS+Vax6TOft5eZJ37QWRSQM6Xis6OOEVlRhzpM2807WyiA==
+"@guidepup/guidepup@^0.24.1":
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.24.1.tgz#6027b0e65673fa19c24fa9a44b94527feb526eeb"
+  integrity sha512-L33QKSzeceTOq/DaxAhEkM6fEbJmzkOF2K0U6AsN0zuzy1T4/2LVsLG9f9IPge70T6XgUF7fsCzYotVo4FNk/A==
   dependencies:
     regedit "5.1.2"
     semver "^7.3.8"
