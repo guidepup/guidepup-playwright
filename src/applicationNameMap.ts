@@ -1,5 +1,5 @@
 export const applicationNameMap = {
-  chromium: "Chromium",
+  chromium: "Google Chrome For Testing",
   chrome: "Google Chrome",
   "chrome-beta": "Google Chrome Beta",
   msedge: "Microsoft Edge",
