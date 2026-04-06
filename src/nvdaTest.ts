@@ -57,15 +57,26 @@ const MOVE_TO_TOP = {
   modifiers: [WindowsModifiers.Control],
 };
 
+type FocusBrowserParams = {
+  applicationName: string;
+  pageTitle: string;
+}
+
+const hasFocus = ({applicationName, pageTitle, windowTitle}:FocusBrowserParams & {windowTitle:string})=>{
+ return (pageTitle.length && windowTitle.startsWith(pageTitle)) || windowTitle.includes(applicationName)
+}
+
 const focusBrowser = async ({
   applicationName,
+    pageTitle,
 }: {
   applicationName: string;
+  pageTitle: string
 }) => {
   await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
   let windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
-  if (windowTitle.includes(applicationName)) {
+  if (hasFocus({applicationName, pageTitle, windowTitle})) {
     return;
   }
 
@@ -78,7 +89,7 @@ const focusBrowser = async ({
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
     windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
-    if (windowTitle.includes(applicationName)) {
+    if (hasFocus({applicationName, pageTitle, windowTitle})) {
       break;
     }
   }
@@ -139,8 +150,9 @@ export const nvdaTest = test.extend<{
           nvdaPlaywright.keyboardCommands.exitFocusMode
         );
 
+        const pageTitle = await page.title();
         // Ensure application is brought to front and focused.
-        await focusBrowser({ applicationName });
+        await focusBrowser({ applicationName, pageTitle });
 
         // NVDA appears to not work well with Firefox when switching between
         // applications resulting in the entire browser window having NVDA focus
