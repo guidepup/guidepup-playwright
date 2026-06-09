@@ -32,11 +32,11 @@ export interface VoiceOverPlaywright extends VoiceOver {
    * Guidepup Playwright specific command that navigates VoiceOver to the beginning
    * of the browser's web content.
    *
-   * This command should be used after page navigation.
+   * This command should be used after a page navigation has completed.
    *
-   * Note: this command clears all logs.
+   * Note: this command clears all logs by default.
    */
-  navigateToWebContent(): Promise<void>;
+  navigateToWebContent(clearLogs?: boolean): Promise<void>;
 }
 
 const voiceOverPlaywright: VoiceOverPlaywright =
@@ -81,7 +81,7 @@ export const voiceOverTest = test.extend<{
    */
   voiceOverStartOptions: CommandOptions;
 }>({
-  voiceOverStartOptions: {},
+  voiceOverStartOptions: { capture: "initial" },
   voiceOver: async ({ browserName, page, voiceOverStartOptions }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
@@ -90,7 +90,9 @@ export const voiceOverTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      voiceOverPlaywright.navigateToWebContent = async () => {
+      voiceOverPlaywright.navigateToWebContent = async (
+        clearLogs: boolean = true,
+      ) => {
         // Ensure application is brought to front and focused.
         await macOSActivate(applicationName);
 
@@ -98,16 +100,34 @@ export const voiceOverTest = test.extend<{
         await page.bringToFront();
         await page.locator("body").waitFor();
         await page.locator("body").focus();
+        await page.locator("body").click();
+        await page.locator("body").blur();
 
-        // Navigate to the beginning of the web content.
+        // Try to navigate into web content.
         await voiceOverPlaywright.interact();
+
+        // Series of find previous commands to escape accidental interaction
+        // with sub-content of web content area.
         await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.jumpToLeftEdge
+          voiceOverPlaywright.keyboardCommands.findPreviousHeading,
+        );
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.findPreviousGraphic,
+        );
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.findPreviousPlainText,
         );
 
-        // Clear out logs.
-        await voiceOverPlaywright.clearItemTextLog();
-        await voiceOverPlaywright.clearSpokenPhraseLog();
+        // Navigate to the beginning of the web content.
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+        );
+
+        if (clearLogs) {
+          // Clear out logs.
+          await voiceOverPlaywright.clearItemTextLog();
+          await voiceOverPlaywright.clearSpokenPhraseLog();
+        }
       };
 
       await voiceOverPlaywright.start(voiceOverStartOptions);

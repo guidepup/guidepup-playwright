@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Screen reader driver for Playwright tests.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -8,7 +8,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/guidepup/guidepup-playwright"
+    "url": "git+https://github.com/guidepup/guidepup-playwright.git"
   },
   "bugs": {
     "url": "https://github.com/guidepup/guidepup-playwright/issues"
@@ -42,9 +42,9 @@
     "test:voiceover:webkit": "playwright test --config ./examples/playwright-voiceover/webkit.config.ts ./examples/playwright-voiceover/tests/webkit/"
   },
   "devDependencies": {
-    "@guidepup/guidepup": "^0.24.1",
+    "@guidepup/guidepup": "^0.25.0",
     "@guidepup/record": "^0.1.0",
-    "@playwright/test": "^1.58.0",
+    "@playwright/test": "^1.60.0",
     "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^8.48.1",
     "@typescript-eslint/parser": "^8.48.1",
@@ -56,7 +56,7 @@
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@guidepup/guidepup": ">=0.22.1",
+    "@guidepup/guidepup": ">=0.25.0",
     "@playwright/test": "^1.57.0"
   },
   "resolutions": {

@@ -4,6 +4,8 @@ export type ScreenReaderPlaywrightTestConfig = PlaywrightTestConfig;
 
 /**
  * Minimal required configuration for Screen Reader tests in Playwright.
+ *
+ * Depending on your configuration this may not be sufficient.
  */
 export const screenReaderConfig: ScreenReaderPlaywrightTestConfig = {
   /**
