@@ -6,12 +6,11 @@
 
 ## [Documentation](https://guidepup.dev) | [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
 
-[![MacOS Monetary Support](https://img.shields.io/badge/macos-Monetary-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-monterey/id1576738294)
-[![MacOS Ventura Support](https://img.shields.io/badge/macos-Ventura-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-ventura/id1638787999)
 [![MacOS Sonoma Support](https://img.shields.io/badge/macos-Somona-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-sonoma/id6450717509)
-[![Windows 10 Support](https://img.shields.io/badge/windows-10-blue.svg?logo=windows10)](https://www.microsoft.com/en-gb/software-download/windows10ISO)
-[![Windows Server 2019 Support](https://img.shields.io/badge/windows_server-2019-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019)
+[![MacOS Sequoia Support](https://img.shields.io/badge/macos-Somona-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-sequoia/id6596773750)
+[![MacOS Tahoe Support](https://img.shields.io/badge/macos-Tahoe-blue.svg?logo=apple)](https://www.apple.com/uk/os/macos/)
 [![Windows Server 2022 Support](https://img.shields.io/badge/windows_server-2022-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022)
+[![Windows Server 2025 Support](https://img.shields.io/badge/windows_server-2025-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025)
 
 This package provides [Guidepup](https://github.com/guidepup/guidepup) integration with [Playwright](https://playwright.dev/) for writing screen reader tests that automate <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a> and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>.
 
@@ -95,7 +94,7 @@ await nvda.navigateToWebContent();
 // ... some commands
 ```
 
-**Note:** This command clears all logs meaning `.spokenPhraseLog()` and `.itemTextLog()` are emptied. If logs from prior to the command are required, first store the logs in a variable for later use:
+**Note:** This command clears all logs by default meaning `.spokenPhraseLog()` and `.itemTextLog()` are emptied. If logs from prior to the command are required, either store the logs in a variable for later use:
 
 ```ts
 // ... some commands
@@ -114,6 +113,17 @@ const allSpokenPhrases = [...spokenPhrases, ...(await nvda.spokenPhraseLog())];
 // ... do something with spoken phrases
 ```
 
+or pass a flag to prevent log clearing:
+
+```ts
+// ... some commands
+
+// Navigate to the web content
+await nvda.navigateToWebContent(false);
+
+// ... some commands
+```
+
 ### Providing Screen Reader Start Options
 
 The options provided to `nvda.start([options])` or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
@@ -122,15 +132,19 @@ The options provided to `nvda.start([options])` or `voiceOver.start([options])` 
 // VoiceOver Example
 import { voiceOverTest as test } from "@guidepup/playwright";
 
-test.use({ voiceOverStartOptions: { capture: "initial" } });
+// Capture all spoken phrases, including usage hints
+test.use({ voiceOverStartOptions: { capture: true } });
 ```
 
 ```ts
 // NVDA Example
 import { nvdaTest as test } from "@guidepup/playwright";
 
-test.use({ nvdaStartOptions: { capture: "initial" } });
+// Capture all spoken phrases, including usage hints
+test.use({ nvdaStartOptions: { capture: true } });
 ```
+
+The default for VoiceOver and NVDA is set to `"initial"`. `true` captures all spoken phrases, including usage hints. `false` disables spoken phrase capture.
 
 ### VoiceOver Example
 
@@ -148,6 +162,8 @@ const config: PlaywrightTestConfig = {
   projects: [
     {
       name: "webkit",
+      // Take care to ensure all usage is headed - screen readers cannot
+      // operate against headless browsers.
       use: { ...devices["Desktop Safari"], headless: false },
     },
   ],
@@ -206,6 +222,8 @@ const config: PlaywrightTestConfig = {
   projects: [
     {
       name: "firefox",
+      // Take care to ensure all usage is headed - screen readers cannot
+      // operate against headless browsers.
       use: { ...devices["Desktop Firefox"], headless: false },
     },
   ],

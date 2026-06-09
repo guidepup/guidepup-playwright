@@ -38,9 +38,9 @@ export interface NVDAPlaywright extends NVDA {
    *
    * This command should be used after page navigation.
    *
-   * Note: this command clears all logs.
+   * Note: this command clears all logs by default.
    */
-  navigateToWebContent(): Promise<void>;
+  navigateToWebContent(clearLogs?: boolean): Promise<void>;
 }
 
 const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
@@ -60,23 +60,30 @@ const MOVE_TO_TOP = {
 type FocusBrowserParams = {
   applicationName: string;
   pageTitle: string;
-}
+};
 
-const hasFocus = ({applicationName, pageTitle, windowTitle}:FocusBrowserParams & {windowTitle:string})=>{
- return (pageTitle.length && windowTitle.startsWith(pageTitle)) || windowTitle.includes(applicationName)
-}
+const hasFocus = ({
+  applicationName,
+  pageTitle,
+  windowTitle,
+}: FocusBrowserParams & { windowTitle: string }) => {
+  return (
+    (pageTitle.length && windowTitle.startsWith(pageTitle)) ||
+    windowTitle.includes(applicationName)
+  );
+};
 
 const focusBrowser = async ({
   applicationName,
-    pageTitle,
+  pageTitle,
 }: {
   applicationName: string;
-  pageTitle: string
+  pageTitle: string;
 }) => {
   await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
   let windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
-  if (hasFocus({applicationName, pageTitle, windowTitle})) {
+  if (hasFocus({ applicationName, pageTitle, windowTitle })) {
     return;
   }
 
@@ -89,7 +96,7 @@ const focusBrowser = async ({
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
     windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
-    if (hasFocus({applicationName, pageTitle, windowTitle})) {
+    if (hasFocus({ applicationName, pageTitle, windowTitle })) {
       break;
     }
   }
@@ -132,7 +139,7 @@ export const nvdaTest = test.extend<{
    */
   nvdaStartOptions: CaptureCommandOptions;
 }>({
-  nvdaStartOptions: {},
+  nvdaStartOptions: { capture: "initial" },
   nvda: async ({ browserName, page, nvdaStartOptions }, use) => {
     try {
       const applicationName = applicationNameMap[browserName];
@@ -144,15 +151,24 @@ export const nvdaTest = test.extend<{
       await page.goto("about:blank", { waitUntil: "load" });
       await page.bringToFront();
 
-      nvdaPlaywright.navigateToWebContent = async () => {
+      nvdaPlaywright.navigateToWebContent = async (
+        clearLogs: boolean = true,
+      ) => {
         // Make sure NVDA is not in focus mode.
         await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.exitFocusMode
+          nvdaPlaywright.keyboardCommands.exitFocusMode,
         );
 
         const pageTitle = await page.title();
         // Ensure application is brought to front and focused.
         await focusBrowser({ applicationName, pageTitle });
+
+        // Ensure the document is ready and focused.
+        await page.bringToFront();
+        await page.locator("body").waitFor();
+        await page.locator("body").focus();
+        await page.locator("body").click();
+        await page.locator("body").blur();
 
         // NVDA appears to not work well with Firefox when switching between
         // applications resulting in the entire browser window having NVDA focus
@@ -165,26 +181,27 @@ export const nvdaTest = test.extend<{
         //
         // REF: https://github.com/nvaccess/nvda/issues/5758
         await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.readNextFocusableItem
+          nvdaPlaywright.keyboardCommands.readNextFocusableItem,
         );
         await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode
+          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
         );
         await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode
+          nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
         );
         await nvdaPlaywright.perform(
-          nvdaPlaywright.keyboardCommands.exitFocusMode
+          nvdaPlaywright.keyboardCommands.exitFocusMode,
         );
         await nvdaPlaywright.perform(MOVE_TO_TOP);
 
-        // Clear out logs.
-        await nvdaPlaywright.clearItemTextLog();
-        await nvdaPlaywright.clearSpokenPhraseLog();
+        if (clearLogs) {
+          // Clear out logs.
+          await nvdaPlaywright.clearItemTextLog();
+          await nvdaPlaywright.clearSpokenPhraseLog();
+        }
       };
 
       await nvdaPlaywright.start(nvdaStartOptions);
-
       await use(nvdaPlaywright);
     } finally {
       try {
