@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-15, macos-15-intel, macos-26, macos-26-intel]
+        os: [macos-14, macos-15, macos-26]
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v6
