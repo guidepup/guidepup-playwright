@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { voiceOver, macOSActivate } from "@guidepup/guidepup";
+import { voiceOver, macOSActivate, MacOSKeyCodes } from "@guidepup/guidepup";
 import type { CommandOptions, VoiceOver } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
 
@@ -96,32 +96,35 @@ export const voiceOverTest = test.extend<{
         // Ensure application is brought to front and focused.
         await macOSActivate(applicationName);
 
+        // Cancel auto navigation
+        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
+
         // Ensure the document is ready and focused.
         await page.bringToFront();
         await page.locator("body").waitFor();
-        await page.locator("body").focus();
-        await page.locator("body").click();
-        await page.locator("body").blur();
 
-        // Try to navigate into web content.
+        // Open the web item rotor defaulting to window spots.
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.openWebItemRotor,
+        );
+
+        // Filter by "content" - currently web content spots for all browsers
+        // are prefixed by "Content -".
+        await voiceOverPlaywright.type("content");
+
+        // Select the web content window spot.
+        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Enter });
+
+        // Navigate into web content.
         await voiceOverPlaywright.interact();
-
-        // Series of find previous commands to escape accidental interaction
-        // with sub-content of web content area.
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.findPreviousHeading,
-        );
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.findPreviousGraphic,
-        );
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.findPreviousPlainText,
-        );
 
         // Navigate to the beginning of the web content.
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
         );
+
+        // Cancel auto navigation
+        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
 
         if (clearLogs) {
           // Clear out logs.
@@ -132,6 +135,13 @@ export const voiceOverTest = test.extend<{
 
       await voiceOverPlaywright.start(voiceOverStartOptions);
       await macOSActivate(applicationName);
+
+      // Cancel auto navigation
+      await voiceOverPlaywright.perform(
+        { keyCode: MacOSKeyCodes.Control },
+        { capture: false },
+      );
+
       await use(voiceOverPlaywright);
     } finally {
       try {
