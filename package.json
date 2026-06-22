@@ -1,7 +1,7 @@
 {
   "name": "@guidepup/playwright",
   "version": "0.16.1",
-  "description": "Screen reader driver for Playwright tests.",
+  "description": "Screen reader automation library for Playwright testing. ",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Craig Morten <craig.morten@hotmail.co.uk>",
