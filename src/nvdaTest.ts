@@ -161,9 +161,6 @@ export const nvdaTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      await page.goto("about:blank", { waitUntil: "load" });
-      await page.bringToFront();
-
       nvdaPlaywright.navigateToWebContent = async (
         clearLogs: boolean = true,
       ) => {
