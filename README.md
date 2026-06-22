@@ -73,11 +73,11 @@ Check out the configuration this adds [in the `config.ts` file](./src/config.ts)
 
 ### Web Content Navigation
 
-In addition to the Guidepup APIs the `voiceOver` and `nvda` instances provided by the Guidepup Playwright setup have an additional utility method `.navigateToWebContent()`.
+In addition to the Guidepup APIs the `screenReader`, `voiceOver`, and `nvda` instances provided by the Guidepup Playwright setup have an additional utility method `.navigateToWebContent()`.
 
 This method will navigate the screen reader to the first element of the document body in the browser.
 
-Use this method after you navigate to a page and have made any necessary checks that the page has loaded as expected. For example, this is how you might use the method with NVDA:
+Use this method after you navigate to a page and have made any necessary checks that the page has loaded as expected. For example, this is how you might use the method:
 
 ```ts
 // Navigate to the desired page
@@ -89,7 +89,7 @@ await page.goto("https://github.com/guidepup/guidepup", {
 await page.locator('header[role="banner"]').waitFor();
 
 // Navigate to the web content
-await nvda.navigateToWebContent();
+await screenReader.navigateToWebContent();
 
 // ... some commands
 ```
@@ -100,15 +100,15 @@ await nvda.navigateToWebContent();
 // ... some commands
 
 // Store spoken phrases
-const spokenPhrases = await nvda.spokenPhraseLog();
+const spokenPhrases = await screenReader.spokenPhraseLog();
 
 // Navigate to the web content
-await nvda.navigateToWebContent();
+await screenReader.navigateToWebContent();
 
 // ... some commands
 
 // Collect all spoken phrases
-const allSpokenPhrases = [...spokenPhrases, ...(await nvda.spokenPhraseLog())];
+const allSpokenPhrases = [...spokenPhrases, ...(await screenReader.spokenPhraseLog())];
 
 // ... do something with spoken phrases
 ```
@@ -119,14 +119,22 @@ or pass a flag to prevent log clearing:
 // ... some commands
 
 // Navigate to the web content
-await nvda.navigateToWebContent(false);
+await screenReader.navigateToWebContent(false);
 
 // ... some commands
 ```
 
 ### Providing Screen Reader Start Options
 
-The options provided to `nvda.start([options])` or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
+The options provided to `screenReader.start([options])`, `nvda.start([options])`, or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
+
+```ts
+// Screen Reader Example
+import { screenReaderTest as test } from "@guidepup/playwright";
+
+// Capture all spoken phrases, including usage hints
+test.use({ screenReaderStartOptions: { capture: true } });
+```
 
 ```ts
 // VoiceOver Example
