@@ -62,14 +62,27 @@ type FocusBrowserParams = {
   pageTitle: string;
 };
 
+const cleanString = (str: string): string =>
+  str
+    .toLowerCase()
+    // REF: https://github.com/nvaccess/nvda/blob/master/source/locale/en/symbols.dic
+    .replace(/[|¦:;'"`\-‐–—·_()[\]{}\\^~]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 const hasFocus = ({
   applicationName,
   pageTitle,
   windowTitle,
 }: FocusBrowserParams & { windowTitle: string }) => {
+  const cleanedApplicationName = cleanString(applicationName);
+  const cleanedPageTitle = cleanString(pageTitle);
+  const cleanedWindowTitle = cleanString(windowTitle);
+
   return (
-    (pageTitle.length && windowTitle.startsWith(pageTitle)) ||
-    windowTitle.includes(applicationName)
+    (cleanedPageTitle.length &&
+      cleanedWindowTitle.startsWith(cleanedPageTitle)) ||
+    cleanedWindowTitle.includes(cleanedApplicationName)
   );
 };
 
@@ -81,9 +94,7 @@ const focusBrowser = async ({
   pageTitle: string;
 }) => {
   await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
-  let windowTitle = (await nvdaPlaywright.lastSpokenPhrase()).toLowerCase();
-
-  console.log({ applicationName, pageTitle, windowTitle });
+  let windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
   if (hasFocus({ applicationName, pageTitle, windowTitle })) {
     return;
@@ -96,7 +107,7 @@ const focusBrowser = async ({
 
     await nvdaPlaywright.perform(SWITCH_APPLICATION);
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
-    windowTitle = (await nvdaPlaywright.lastSpokenPhrase()).toLowerCase();
+    windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
     if (hasFocus({ applicationName, pageTitle, windowTitle })) {
       break;
@@ -164,8 +175,8 @@ export const nvdaTest = test.extend<{
         const pageTitle = await page.title();
         // Ensure application is brought to front and focused.
         await focusBrowser({
-          applicationName: applicationName.toLowerCase(),
-          pageTitle: pageTitle.toLowerCase(),
+          applicationName,
+          pageTitle,
         });
 
         // Ensure the document is ready and focused.
