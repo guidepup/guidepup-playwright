@@ -81,7 +81,9 @@ const focusBrowser = async ({
   pageTitle: string;
 }) => {
   await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
-  let windowTitle = await nvdaPlaywright.lastSpokenPhrase();
+  let windowTitle = (await nvdaPlaywright.lastSpokenPhrase()).toLowerCase();
+
+  console.log({ applicationName, pageTitle, windowTitle });
 
   if (hasFocus({ applicationName, pageTitle, windowTitle })) {
     return;
@@ -94,7 +96,7 @@ const focusBrowser = async ({
 
     await nvdaPlaywright.perform(SWITCH_APPLICATION);
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
-    windowTitle = await nvdaPlaywright.lastSpokenPhrase();
+    windowTitle = (await nvdaPlaywright.lastSpokenPhrase()).toLowerCase();
 
     if (hasFocus({ applicationName, pageTitle, windowTitle })) {
       break;
@@ -161,7 +163,10 @@ export const nvdaTest = test.extend<{
 
         const pageTitle = await page.title();
         // Ensure application is brought to front and focused.
-        await focusBrowser({ applicationName, pageTitle });
+        await focusBrowser({
+          applicationName: applicationName.toLowerCase(),
+          pageTitle: pageTitle.toLowerCase(),
+        });
 
         // Ensure the document is ready and focused.
         await page.bringToFront();
