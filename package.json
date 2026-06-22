@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "Screen reader automation library for Playwright testing. ",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
