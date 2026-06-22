@@ -103,14 +103,14 @@ export const voiceOverTest = test.extend<{
         await page.bringToFront();
         await page.locator("body").waitFor();
 
-        // Open the web item rotor defaulting to window spots.
+        // Open the web item chooser.
         await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.openWebItemRotor,
+          voiceOverPlaywright.keyboardCommands.openItemChooser,
         );
 
-        // Filter by "content" - currently web content spots for all browsers
-        // are prefixed by "Content -".
-        await voiceOverPlaywright.type("content");
+        // Filter by "web content" - currently web content items for all browsers
+        // are suffixed by "web content".
+        await voiceOverPlaywright.type("web content");
 
         // Select the web content window spot.
         await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Enter });
