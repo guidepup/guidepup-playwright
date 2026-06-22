@@ -134,14 +134,6 @@ export const voiceOverTest = test.extend<{
       };
 
       await voiceOverPlaywright.start(voiceOverStartOptions);
-      await macOSActivate(applicationName);
-
-      // Cancel auto navigation
-      await voiceOverPlaywright.perform(
-        { keyCode: MacOSKeyCodes.Control },
-        { capture: false },
-      );
-
       await use(voiceOverPlaywright);
     } finally {
       try {
