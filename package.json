@@ -44,7 +44,7 @@
     "test:voiceover:webkit": "playwright test --config ./examples/playwright-voiceover/webkit.config.ts ./examples/playwright-voiceover/tests/webkit/"
   },
   "devDependencies": {
-    "@guidepup/guidepup": "^0.27.0",
+    "@guidepup/guidepup": "^0.28.1",
     "@guidepup/record": "^0.1.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^24.10.1",
