@@ -1,12 +1,9 @@
 import { log } from "../../log";
 import { Page } from "@playwright/test";
 import type { ScreenReaderPlaywright } from "../../../src";
+import { delay } from "../../../src/delay";
 
 const MAX_NAVIGATION_LOOP = 10;
-
-export async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export async function headerNavigation({
   page,

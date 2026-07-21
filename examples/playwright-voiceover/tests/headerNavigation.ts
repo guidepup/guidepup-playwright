@@ -1,10 +1,7 @@
 import { Page } from "@playwright/test";
 import { log } from "../../log";
 import type { VoiceOverPlaywright } from "../../../src";
-
-async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import { delay } from "../../../src/delay";
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -47,7 +44,7 @@ export async function headerNavigation({
     // Describe the item in the VoiceOver cursor as it can sometimes skip part
     // of the spoken phrase if interrupted.
     log(
-      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`
+      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
     );
     await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
     log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
