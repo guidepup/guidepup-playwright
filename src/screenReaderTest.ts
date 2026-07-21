@@ -180,7 +180,9 @@ export const screenReaderTest = test.extend<{
       }
 
       if (nvda.default()) {
-        screenReaderPlaywright.navigateToWebContent = async ({ capture }) => {
+        screenReaderPlaywright.navigateToWebContent = async ({
+          capture,
+        } = {}) => {
           const currentSpokenPhraseLog = [
             ...(await screenReaderPlaywright.spokenPhraseLog()),
           ];
@@ -247,7 +249,9 @@ export const screenReaderTest = test.extend<{
           await screenReaderPlaywright.perform(MOVE_TO_TOP, { capture });
         };
       } else if (voiceOver.default()) {
-        screenReaderPlaywright.navigateToWebContent = async ({ capture }) => {
+        screenReaderPlaywright.navigateToWebContent = async ({
+          capture,
+        } = {}) => {
           await macOSActivate(applicationName);
 
           await screenReaderPlaywright.perform(

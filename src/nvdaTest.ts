@@ -160,7 +160,7 @@ export const nvdaTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      nvdaPlaywright.navigateToWebContent = async ({ capture }) => {
+      nvdaPlaywright.navigateToWebContent = async ({ capture } = {}) => {
         const currentSpokenPhraseLog = [
           ...(await nvdaPlaywright.spokenPhraseLog()),
         ];

@@ -88,7 +88,7 @@ export const voiceOverTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      voiceOverPlaywright.navigateToWebContent = async ({ capture }) => {
+      voiceOverPlaywright.navigateToWebContent = async ({ capture } = {}) => {
         // Ensure application is brought to front and focused.
         await macOSActivate(applicationName);
 
