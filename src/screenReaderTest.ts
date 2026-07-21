@@ -13,6 +13,7 @@ import {
   WindowsModifiers,
 } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
+import { delay } from "./delay";
 
 type Prettify<T> = {
   [K in keyof T]: T[K];
@@ -83,6 +84,7 @@ const focusBrowser = async ({
     await screenReaderPlaywright.perform(SWITCH_APPLICATION, {
       capture: false,
     });
+    await delay(100);
 
     await screenReaderPlaywright.perform(NVDAKeyCodeCommands.reportTitle);
     windowTitle = await screenReaderPlaywright.lastSpokenPhrase();
@@ -123,7 +125,9 @@ export interface ScreenReaderPlaywright extends ScreenReader {
    *
    * This command should be used after page navigation.
    */
-  navigateToWebContent(options: Pick<CommandOptions, "capture">): Promise<void>;
+  navigateToWebContent(
+    options?: Pick<CommandOptions, "capture">,
+  ): Promise<void>;
 }
 
 const screenReaderPlaywright: ScreenReaderPlaywright =
@@ -195,6 +199,7 @@ export const screenReaderTest = test.extend<{
             NVDAKeyCodeCommands.exitFocusMode,
             { capture: false },
           );
+          await delay(100);
 
           // Ensure application is brought to front and focused.
           const pageTitle = await page.title();
@@ -221,18 +226,22 @@ export const screenReaderTest = test.extend<{
             NVDAKeyCodeCommands.readNextFocusableItem,
             { capture: false },
           );
+          await delay(100);
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.toggleBetweenBrowseAndFocusMode,
             { capture: false },
           );
+          await delay(100);
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.toggleBetweenBrowseAndFocusMode,
             { capture: false },
           );
+          await delay(100);
           await screenReaderPlaywright.perform(
             NVDAKeyCodeCommands.exitFocusMode,
             { capture: false },
           );
+          await delay(100);
 
           await screenReaderPlaywright.clearSpokenPhraseLog();
           await screenReaderPlaywright.clearItemTextLog();
@@ -252,39 +261,58 @@ export const screenReaderTest = test.extend<{
         screenReaderPlaywright.navigateToWebContent = async ({
           capture,
         } = {}) => {
+          // Ensure application is brought to front and focused.
           await macOSActivate(applicationName);
 
+          // Cancel auto navigation.
           await screenReaderPlaywright.perform(
             { keyCode: MacOSKeyCodes.Control },
             { capture: false },
           );
+          await delay(100);
 
+          // Ensure the document is ready and focused.
           await page.bringToFront();
           await page.locator("body").waitFor();
 
+          // Open the web item chooser.
           await screenReaderPlaywright.perform(
             voiceOverKeyCodeCommands.openItemChooser,
             { capture: false },
           );
+          await delay(100);
 
-          await screenReaderPlaywright.type("web content", { capture: false });
+          // Filter by "web content" - currently web content items for all browsers
+          // are suffixed by "web content".
+          for (const character of "web content") {
+            await screenReaderPlaywright.type(character, { capture: false });
+            await delay(100);
+          }
 
+          // Select the web content window spot.
           await screenReaderPlaywright.perform(
             { keyCode: MacOSKeyCodes.Enter },
             { capture: false },
           );
+          await delay(100);
 
+          // Navigate into web content.
           await screenReaderPlaywright.interact({ capture: false });
+          await delay(100);
 
+          // Navigate to the beginning of the web content.
           await screenReaderPlaywright.perform(
             voiceOverKeyCodeCommands.moveToBeginningOfText,
             { capture: false },
           );
+          await delay(100);
 
+          // Cancel auto navigation
           await screenReaderPlaywright.perform(
             { keyCode: MacOSKeyCodes.Control },
             { capture: false },
           );
+          await delay(100);
 
           // Navigate to the beginning of the web content, using chosen capture
           // settings, so don't miss announcing the first item on the page.

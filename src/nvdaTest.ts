@@ -2,6 +2,7 @@ import { test } from "@playwright/test";
 import { nvda, WindowsKeyCodes, WindowsModifiers } from "@guidepup/guidepup";
 import type { CommandOptions, NVDA } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
+import { delay } from "./delay";
 
 type Prettify<T> = {
   [K in keyof T]: T[K];
@@ -38,7 +39,9 @@ export interface NVDAPlaywright extends NVDA {
    *
    * This command should be used after page navigation.
    */
-  navigateToWebContent(options: Pick<CommandOptions, "capture">): Promise<void>;
+  navigateToWebContent(
+    options?: Pick<CommandOptions, "capture">,
+  ): Promise<void>;
 }
 
 const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
@@ -104,6 +107,7 @@ const focusBrowser = async ({
     applicationSwitchRetryCount++;
 
     await nvdaPlaywright.perform(SWITCH_APPLICATION, { capture: false });
+    await delay(100);
 
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
     windowTitle = await nvdaPlaywright.lastSpokenPhrase();
@@ -171,6 +175,7 @@ export const nvdaTest = test.extend<{
           nvdaPlaywright.keyboardCommands.exitFocusMode,
           { capture: false },
         );
+        await delay(100);
 
         // Ensure application is brought to front and focused.
         const pageTitle = await page.title();
@@ -197,18 +202,22 @@ export const nvdaTest = test.extend<{
           nvdaPlaywright.keyboardCommands.readNextFocusableItem,
           { capture: false },
         );
+        await delay(100);
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
           { capture: false },
         );
+        await delay(100);
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
           { capture: false },
         );
+        await delay(100);
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode,
           { capture: false },
         );
+        await delay(100);
 
         await nvdaPlaywright.clearSpokenPhraseLog();
         await nvdaPlaywright.clearItemTextLog();
