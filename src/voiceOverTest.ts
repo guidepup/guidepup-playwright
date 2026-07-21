@@ -2,6 +2,7 @@ import { test } from "@playwright/test";
 import { voiceOver, macOSActivate, MacOSKeyCodes } from "@guidepup/guidepup";
 import type { CommandOptions, VoiceOver } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
+import { delay } from "./delay";
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-voiceover)
@@ -33,10 +34,10 @@ export interface VoiceOverPlaywright extends VoiceOver {
    * of the browser's web content.
    *
    * This command should be used after a page navigation has completed.
-   *
-   * Note: this command clears all logs by default.
    */
-  navigateToWebContent(clearLogs?: boolean): Promise<void>;
+  navigateToWebContent(
+    options?: Pick<CommandOptions, "capture">,
+  ): Promise<void>;
 }
 
 const voiceOverPlaywright: VoiceOverPlaywright =
@@ -90,14 +91,16 @@ export const voiceOverTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      voiceOverPlaywright.navigateToWebContent = async (
-        clearLogs: boolean = true,
-      ) => {
+      voiceOverPlaywright.navigateToWebContent = async ({ capture } = {}) => {
         // Ensure application is brought to front and focused.
         await macOSActivate(applicationName);
 
-        // Cancel auto navigation
-        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
+        // Cancel auto navigation.
+        await voiceOverPlaywright.perform(
+          { keyCode: MacOSKeyCodes.Control },
+          { capture: false },
+        );
+        await delay(100);
 
         // Ensure the document is ready and focused.
         await page.bringToFront();
@@ -106,31 +109,48 @@ export const voiceOverTest = test.extend<{
         // Open the web item chooser.
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.openItemChooser,
+          { capture: false },
         );
+        await delay(500);
 
         // Filter by "web content" - currently web content items for all browsers
         // are suffixed by "web content".
-        await voiceOverPlaywright.type("web content");
+        for (const character of "web content") {
+          await voiceOverPlaywright.type(character, { capture: false });
+          await delay(100);
+        }
 
         // Select the web content window spot.
-        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Enter });
+        await voiceOverPlaywright.perform(
+          { keyCode: MacOSKeyCodes.Enter },
+          { capture: false },
+        );
+        await delay(100);
 
         // Navigate into web content.
-        await voiceOverPlaywright.interact();
+        await voiceOverPlaywright.interact({ capture: false });
+        await delay(100);
 
         // Navigate to the beginning of the web content.
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+          { capture: false },
         );
+        await delay(100);
 
         // Cancel auto navigation
-        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
+        await voiceOverPlaywright.perform(
+          { keyCode: MacOSKeyCodes.Control },
+          { capture: false },
+        );
+        await delay(100);
 
-        if (clearLogs) {
-          // Clear out logs.
-          await voiceOverPlaywright.clearItemTextLog();
-          await voiceOverPlaywright.clearSpokenPhraseLog();
-        }
+        // Navigate to the beginning of the web content, using chosen capture
+        // settings, so don't miss announcing the first item on the page.
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+          { capture },
+        );
       };
 
       await voiceOverPlaywright.start(voiceOverStartOptions);

@@ -2,6 +2,7 @@ import { test } from "@playwright/test";
 import { nvda, WindowsKeyCodes, WindowsModifiers } from "@guidepup/guidepup";
 import type { CommandOptions, NVDA } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
+import { delay } from "./delay";
 
 type Prettify<T> = {
   [K in keyof T]: T[K];
@@ -37,10 +38,10 @@ export interface NVDAPlaywright extends NVDA {
    * of the browser's web content.
    *
    * This command should be used after page navigation.
-   *
-   * Note: this command clears all logs by default.
    */
-  navigateToWebContent(clearLogs?: boolean): Promise<void>;
+  navigateToWebContent(
+    options?: Pick<CommandOptions, "capture">,
+  ): Promise<void>;
 }
 
 const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
@@ -105,7 +106,9 @@ const focusBrowser = async ({
   while (applicationSwitchRetryCount < MAX_APPLICATION_SWITCH_RETRY_COUNT) {
     applicationSwitchRetryCount++;
 
-    await nvdaPlaywright.perform(SWITCH_APPLICATION);
+    await nvdaPlaywright.perform(SWITCH_APPLICATION, { capture: false });
+    await delay(500);
+
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
     windowTitle = await nvdaPlaywright.lastSpokenPhrase();
 
@@ -161,20 +164,22 @@ export const nvdaTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      nvdaPlaywright.navigateToWebContent = async (
-        clearLogs: boolean = true,
-      ) => {
+      nvdaPlaywright.navigateToWebContent = async ({ capture } = {}) => {
+        const currentSpokenPhraseLog = [
+          ...(await nvdaPlaywright.spokenPhraseLog()),
+        ];
+        const currentItemTextLog = [...(await nvdaPlaywright.itemTextLog())];
+
         // Make sure NVDA is not in focus mode.
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode,
+          { capture: false },
         );
+        await delay(100);
 
-        const pageTitle = await page.title();
         // Ensure application is brought to front and focused.
-        await focusBrowser({
-          applicationName,
-          pageTitle,
-        });
+        const pageTitle = await page.title();
+        await focusBrowser({ applicationName, pageTitle });
 
         // Ensure the document is ready and focused.
         await page.bringToFront();
@@ -195,23 +200,37 @@ export const nvdaTest = test.extend<{
         // REF: https://github.com/nvaccess/nvda/issues/5758
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.readNextFocusableItem,
+          { capture: false },
         );
+        await delay(100);
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
+          { capture: false },
         );
+        await delay(100);
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.toggleBetweenBrowseAndFocusMode,
+          { capture: false },
         );
+        await delay(100);
         await nvdaPlaywright.perform(
           nvdaPlaywright.keyboardCommands.exitFocusMode,
+          { capture: false },
         );
-        await nvdaPlaywright.perform(MOVE_TO_TOP);
+        await delay(100);
 
-        if (clearLogs) {
-          // Clear out logs.
-          await nvdaPlaywright.clearItemTextLog();
-          await nvdaPlaywright.clearSpokenPhraseLog();
-        }
+        await nvdaPlaywright.clearSpokenPhraseLog();
+        await nvdaPlaywright.clearItemTextLog();
+
+        const spokenPhraseLog = await nvdaPlaywright.spokenPhraseLog();
+        const itemTextLog = await nvdaPlaywright.itemTextLog();
+
+        spokenPhraseLog.push(...currentSpokenPhraseLog);
+        itemTextLog.push(...currentItemTextLog);
+
+        // Navigate to the beginning of the web content, using chosen capture
+        // settings, so don't miss announcing the first item on the page.
+        await nvdaPlaywright.perform(MOVE_TO_TOP, { capture });
       };
 
       await nvdaPlaywright.start(nvdaStartOptions);
