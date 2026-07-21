@@ -33,10 +33,8 @@ export interface VoiceOverPlaywright extends VoiceOver {
    * of the browser's web content.
    *
    * This command should be used after a page navigation has completed.
-   *
-   * Note: this command clears all logs by default.
    */
-  navigateToWebContent(clearLogs?: boolean): Promise<void>;
+  navigateToWebContent(options: Pick<CommandOptions, "capture">): Promise<void>;
 }
 
 const voiceOverPlaywright: VoiceOverPlaywright =
@@ -90,14 +88,15 @@ export const voiceOverTest = test.extend<{
         throw new Error(`Browser ${browserName} is not installed.`);
       }
 
-      voiceOverPlaywright.navigateToWebContent = async (
-        clearLogs: boolean = true,
-      ) => {
+      voiceOverPlaywright.navigateToWebContent = async ({ capture }) => {
         // Ensure application is brought to front and focused.
         await macOSActivate(applicationName);
 
         // Cancel auto navigation
-        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
+        await voiceOverPlaywright.perform(
+          { keyCode: MacOSKeyCodes.Control },
+          { capture: false },
+        );
 
         // Ensure the document is ready and focused.
         await page.bringToFront();
@@ -106,31 +105,40 @@ export const voiceOverTest = test.extend<{
         // Open the web item chooser.
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.openItemChooser,
+          { capture: false },
         );
 
         // Filter by "web content" - currently web content items for all browsers
         // are suffixed by "web content".
-        await voiceOverPlaywright.type("web content");
+        await voiceOverPlaywright.type("web content", { capture: false });
 
         // Select the web content window spot.
-        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Enter });
+        await voiceOverPlaywright.perform(
+          { keyCode: MacOSKeyCodes.Enter },
+          { capture: false },
+        );
 
         // Navigate into web content.
-        await voiceOverPlaywright.interact();
+        await voiceOverPlaywright.interact({ capture: false });
 
         // Navigate to the beginning of the web content.
         await voiceOverPlaywright.perform(
           voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+          { capture: false },
         );
 
         // Cancel auto navigation
-        await voiceOverPlaywright.perform({ keyCode: MacOSKeyCodes.Control });
+        await voiceOverPlaywright.perform(
+          { keyCode: MacOSKeyCodes.Control },
+          { capture: false },
+        );
 
-        if (clearLogs) {
-          // Clear out logs.
-          await voiceOverPlaywright.clearItemTextLog();
-          await voiceOverPlaywright.clearSpokenPhraseLog();
-        }
+        // Navigate to the beginning of the web content, using chosen capture
+        // settings, so don't miss announcing the first item on the page.
+        await voiceOverPlaywright.perform(
+          voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+          { capture },
+        );
       };
 
       await voiceOverPlaywright.start(voiceOverStartOptions);
