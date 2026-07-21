@@ -22,12 +22,10 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - name: Guidepup Setup
-        uses: guidepup/setup-action@0.21.0
-        with:
-          record: true
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.0 setup --macos-record
       - run: yarn install --frozen-lockfile
       - run: yarn pretest
+      - run: npx -y --min-release-age=0 @guidepup/setup@0.24.0 install
       - run: yarn test:screenreader:${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: always()

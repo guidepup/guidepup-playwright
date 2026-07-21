@@ -1,8 +1,13 @@
-# Guidepup Playwright
+<div align="center">
+  <img align="center" alt="" height="120px" width="120px" src="https://github.com/guidepup/guidepup/raw/main/img/logo.png">
+  <h1 align="center">Guidepup for Playwright</h1>
+</div>
 
-<a href="https://www.npmjs.com/package/@guidepup/playwright"><img alt="@guidepup/playwright available on NPM" src="https://img.shields.io/npm/v/@guidepup/playwright" /></a>
-<a href="https://github.com/guidepup/guidepup-playwright/actions/workflows/test.yml"><img alt="@guidepup/playwright test workflows" src="https://github.com/guidepup/guidepup-playwright/workflows/Test/badge.svg" /></a>
-<a href="https://github.com/guidepup/guidepup-playwright/blob/main/LICENSE"><img alt="@guidepup/playwright uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup-playwright" /></a>
+<div align="center">
+  <a href="https://www.npmjs.com/package/@guidepup/playwright"><img alt="@guidepup/playwright available on NPM" src="https://img.shields.io/npm/v/@guidepup/playwright" /></a>
+  <a href="https://github.com/guidepup/guidepup-playwright/actions/workflows/test.yml"><img alt="@guidepup/playwright test workflows" src="https://github.com/guidepup/guidepup-playwright/workflows/Test/badge.svg" /></a>
+  <a href="https://github.com/guidepup/guidepup-playwright/blob/main/LICENSE"><img alt="@guidepup/playwright uses the MIT license" src="https://img.shields.io/github/license/guidepup/guidepup-playwright" /></a>
+</div>
 
 ## [Documentation](https://guidepup.dev) | [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
 
@@ -12,26 +17,21 @@
 [![Windows Server 2022 Support](https://img.shields.io/badge/windows_server-2022-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022)
 [![Windows Server 2025 Support](https://img.shields.io/badge/windows_server-2025-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025)
 
-This package provides [Guidepup](https://github.com/guidepup/guidepup) integration with [Playwright](https://playwright.dev/) for writing screen reader tests that automate <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a> and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>.
+Guidepup is a screen reader automation library for testing.
+
+This package provides [Guidepup](https://github.com/guidepup/guidepup) integration with [Playwright](https://playwright.dev/) to enable testing with <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a> and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>.
 
 ## Capabilities
 
 - **Full Control** - If a screen reader has a keyboard command, then Guidepup supports it.
 - **Mirrors Real User Experience** - Assert on what users really do and hear when using screen readers.
 
-## Getting Started
+## Getting started
 
-Set up your environment for screen reader automation with [`@guidepup/setup`](https://github.com/guidepup/setup):
+Set up your machine for screen reader automation:
 
 ```sh
-npx @guidepup/setup
-```
-
-If you are using GitHub Actions, check out the dedicated [`guidepup/setup-action`](https://github.com/marketplace/actions/guidepup-setup):
-
-```yaml
-- name: Setup Environment
-  uses: guidepup/setup-action
+npx @guidepup/setup setup
 ```
 
 Install `@guidepup/playwright` to your project:
@@ -40,7 +40,14 @@ Install `@guidepup/playwright` to your project:
 npm install --save-dev @guidepup/playwright @guidepup/guidepup @playwright/test
 ```
 
-Note: you require `@guidepup/guidepup` and `@playwright/test` as they are peer dependencies to this project.
+> [!NOTE]
+> `@guidepup/guidepup` and `@playwright/test` are required as peer dependencies of this project.
+
+Install the Guidepup screen reader assets:
+
+```sh
+npx @guidepup/setup install
+```
 
 And get cracking with your first screen reader tests in Playwright!
 
@@ -48,11 +55,9 @@ And get cracking with your first screen reader tests in Playwright!
 
 Head over to the [Guidepup Website](https://www.guidepup.dev/) for guides, real world examples, environment setup, and complete API documentation with examples.
 
-You can also check out these [awesome examples](https://github.com/guidepup/guidepup/tree/main/examples) to learn how you could use Guidepup with Playwright in your projects.
+You can also check out these [examples](https://github.com/guidepup/guidepup-playwright/tree/main/examples) to learn how you could use Guidepup with Playwright in your projects.
 
-Alternatively check out [this project](https://github.com/guidepup/aria-at-tests) which runs several thousand tests to assert screen reader compatibility against [W3C ARIA-AT](https://github.com/w3c/aria-at) test suite.
-
-### Playwright Config
+### Playwright config
 
 In your `playwright.config.ts` add the following for the best results with Guidepup for Screen Reader automation:
 
@@ -71,7 +76,7 @@ export default config;
 
 Check out the configuration this adds [in the `config.ts` file](./src/config.ts).
 
-### Web Content Navigation
+### Web content navigation
 
 In addition to the Guidepup APIs the `screenReader`, `voiceOver`, and `nvda` instances provided by the Guidepup Playwright setup have an additional utility method `.navigateToWebContent()`.
 
@@ -108,7 +113,10 @@ await screenReader.navigateToWebContent();
 // ... some commands
 
 // Collect all spoken phrases
-const allSpokenPhrases = [...spokenPhrases, ...(await screenReader.spokenPhraseLog())];
+const allSpokenPhrases = [
+  ...spokenPhrases,
+  ...(await screenReader.spokenPhraseLog()),
+];
 
 // ... do something with spoken phrases
 ```
@@ -124,7 +132,7 @@ await screenReader.navigateToWebContent(false);
 // ... some commands
 ```
 
-### Providing Screen Reader Start Options
+### Providing screen reader start options
 
 The options provided to `screenReader.start([options])`, `nvda.start([options])`, or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
 
@@ -154,7 +162,7 @@ test.use({ nvdaStartOptions: { capture: true } });
 
 The default for VoiceOver and NVDA is set to `"initial"`. `true` captures all spoken phrases, including usage hints. `false` disables spoken phrase capture.
 
-### VoiceOver Example
+### VoiceOver example
 
 `playwright.config.ts`:
 
@@ -214,7 +222,7 @@ test.describe("Playwright VoiceOver", () => {
 });
 ```
 
-### NVDA Example
+### NVDA example
 
 `playwright.config.ts`:
 
@@ -276,7 +284,7 @@ test.describe("Playwright NVDA", () => {
 });
 ```
 
-## Powerful Tooling
+## Powerful tooling
 
 Check out some of the other Guidepup modules:
 
