@@ -107,7 +107,7 @@ const focusBrowser = async ({
     applicationSwitchRetryCount++;
 
     await nvdaPlaywright.perform(SWITCH_APPLICATION, { capture: false });
-    await delay(100);
+    await delay(500);
 
     await nvdaPlaywright.perform(nvdaPlaywright.keyboardCommands.reportTitle);
     windowTitle = await nvdaPlaywright.lastSpokenPhrase();

@@ -111,7 +111,7 @@ export const voiceOverTest = test.extend<{
           voiceOverPlaywright.keyboardCommands.openItemChooser,
           { capture: false },
         );
-        await delay(100);
+        await delay(500);
 
         // Filter by "web content" - currently web content items for all browsers
         // are suffixed by "web content".

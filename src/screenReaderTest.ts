@@ -84,7 +84,7 @@ const focusBrowser = async ({
     await screenReaderPlaywright.perform(SWITCH_APPLICATION, {
       capture: false,
     });
-    await delay(100);
+    await delay(500);
 
     await screenReaderPlaywright.perform(NVDAKeyCodeCommands.reportTitle);
     windowTitle = await screenReaderPlaywright.lastSpokenPhrase();
@@ -280,7 +280,7 @@ export const screenReaderTest = test.extend<{
             voiceOverKeyCodeCommands.openItemChooser,
             { capture: false },
           );
-          await delay(100);
+          await delay(500);
 
           // Filter by "web content" - currently web content items for all browsers
           // are suffixed by "web content".
