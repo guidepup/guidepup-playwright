@@ -99,39 +99,6 @@ await screenReader.navigateToWebContent();
 // ... some commands
 ```
 
-**Note:** This command clears all logs by default meaning `.spokenPhraseLog()` and `.itemTextLog()` are emptied. If logs from prior to the command are required, either store the logs in a variable for later use:
-
-```ts
-// ... some commands
-
-// Store spoken phrases
-const spokenPhrases = await screenReader.spokenPhraseLog();
-
-// Navigate to the web content
-await screenReader.navigateToWebContent();
-
-// ... some commands
-
-// Collect all spoken phrases
-const allSpokenPhrases = [
-  ...spokenPhrases,
-  ...(await screenReader.spokenPhraseLog()),
-];
-
-// ... do something with spoken phrases
-```
-
-or pass a flag to prevent log clearing:
-
-```ts
-// ... some commands
-
-// Navigate to the web content
-await screenReader.navigateToWebContent(false);
-
-// ... some commands
-```
-
 ### Providing screen reader start options
 
 The options provided to `screenReader.start([options])`, `nvda.start([options])`, or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
