@@ -1,6 +1,10 @@
 import { test } from "@playwright/test";
 import { voiceOver, macOSActivate, MacOSKeyCodes } from "@guidepup/guidepup";
-import type { CommandOptions, VoiceOver } from "@guidepup/guidepup";
+import type {
+  StartOptions,
+  CommandOptions,
+  VoiceOver,
+} from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
 import { delay } from "./delay";
 
@@ -76,11 +80,11 @@ export const voiceOverTest = test.extend<{
    */
   voiceOver: VoiceOverPlaywright;
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-command-options)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-start-options)
    *
    * Options to start VoiceOver with, see also [voiceOver.start([options])](https://www.guidepup.dev/docs/api/class-voiceover#voiceover-start).
    */
-  voiceOverStartOptions: CommandOptions;
+  voiceOverStartOptions: StartOptions;
 }>({
   voiceOverStartOptions: { capture: "initial" },
   voiceOver: async ({ browserName, page, voiceOverStartOptions }, use) => {
@@ -106,51 +110,93 @@ export const voiceOverTest = test.extend<{
         await page.bringToFront();
         await page.locator("body").waitFor();
 
-        // Open the web item chooser.
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.openItemChooser,
-          { capture: false },
-        );
-        await delay(500);
+        try {
+          // Add an interactive marker to the page that will force VoiceOver
+          // to listen to events emitted by Playwright interactions when
+          // navigated to.
+          await page.evaluate(() => {
+            const marker = document.createElement("input");
 
-        // Filter by "web content" - currently web content items for all browsers
-        // are suffixed by "web content".
-        for (const character of "web content") {
-          await voiceOverPlaywright.type(character, { capture: false });
+            marker.id = "__guidepup_marker__";
+            marker.type = "text";
+            marker.value = "Guidepup Marker";
+            marker.readOnly = true;
+            marker.tabIndex = -1;
+            marker.autocomplete = "off";
+            marker.setAttribute("aria-label", "Guidepup Marker");
+            marker.style.cssText = `
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              overflow: hidden;
+              clip: rect(0 0 0 0);
+              white-space: nowrap;
+            `;
+
+            document.body.prepend(marker);
+          });
+
+          // Open the web item chooser.
+          await voiceOverPlaywright.perform(
+            voiceOverPlaywright.keyboardCommands.openItemChooser,
+            { capture: false },
+          );
+          await delay(500);
+
+          // Filter by "web content" - currently web content items for all browsers
+          // are suffixed by "web content".
+          for (const character of "web content") {
+            await voiceOverPlaywright.type(character, { capture: false });
+            await delay(100);
+          }
+
+          // Select the web content window spot.
+          await voiceOverPlaywright.perform(
+            { keyCode: MacOSKeyCodes.Enter },
+            { capture: false },
+          );
           await delay(100);
+
+          // Navigate into web content.
+          await voiceOverPlaywright.interact({ capture: false });
+          await delay(100);
+
+          // Navigate to the beginning of the web content.
+          await voiceOverPlaywright.perform(
+            voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+            { capture: false },
+          );
+          await delay(100);
+
+          // Cancel auto navigation
+          await voiceOverPlaywright.perform(
+            { keyCode: MacOSKeyCodes.Control },
+            { capture: false },
+          );
+          await delay(100);
+
+          // Navigate to the Guidepup marker element at beginning of the web
+          // content.
+          await voiceOverPlaywright.perform(
+            voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
+            { capture: false },
+          );
+          await delay(100);
+
+          // Navigate to the first element of the page using the provided
+          // capture settings.
+          await voiceOverPlaywright.next({ capture });
+        } finally {
+          // Remove the temporary Guidepup marker element to restore original
+          // page structure.
+          await page.evaluate(() => {
+            const marker = document.querySelector("#__guidepup_marker__");
+
+            if (marker) {
+              document.body.removeChild(marker);
+            }
+          });
         }
-
-        // Select the web content window spot.
-        await voiceOverPlaywright.perform(
-          { keyCode: MacOSKeyCodes.Enter },
-          { capture: false },
-        );
-        await delay(100);
-
-        // Navigate into web content.
-        await voiceOverPlaywright.interact({ capture: false });
-        await delay(100);
-
-        // Navigate to the beginning of the web content.
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
-          { capture: false },
-        );
-        await delay(100);
-
-        // Cancel auto navigation
-        await voiceOverPlaywright.perform(
-          { keyCode: MacOSKeyCodes.Control },
-          { capture: false },
-        );
-        await delay(100);
-
-        // Navigate to the beginning of the web content, using chosen capture
-        // settings, so don't miss announcing the first item on the page.
-        await voiceOverPlaywright.perform(
-          voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
-          { capture },
-        );
       };
 
       await voiceOverPlaywright.start(voiceOverStartOptions);

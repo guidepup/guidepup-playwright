@@ -62,10 +62,10 @@
     "@shikijs/types" "^3.23.0"
     "@shikijs/vscode-textmate" "^10.0.2"
 
-"@guidepup/guidepup@^0.32.1":
-  version "0.32.1"
-  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.32.1.tgz#41435ee52d8fbd3d7ceb23d59501c85199f6b60d"
-  integrity sha512-oeUIca/Vl5xjEIDsMbE2mkZyYy/jzPNtMs424BWSQKuR5XuRlNK3SGlQKaLmMb1E+R7z4OuvE6B2wzAg1KVSHQ==
+"@guidepup/guidepup@^0.33.0":
+  version "0.33.0"
+  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.33.0.tgz#60025daa906f5c055e60a095c27dad1f02359264"
+  integrity sha512-CNFMsUtalwr9varDvevUwv8vKs3VWDshsMehlUGuEkxE4BiQ+Dlz2j0A1LSvPcdIN40oNi98sx4sXHygjdfR3g==
   dependencies:
     plist "^4.0.0"
 
