@@ -251,6 +251,18 @@ test.describe("Playwright NVDA", () => {
 });
 ```
 
+### Capture Playwright Interactions
+
+Use the `capture()` API to wrap Playwright interactions and capture the resulting screen reader output without needing to perform the interaction through Guidepup.
+
+```ts
+const capture = await screenReader.capture(() =>
+  page.getByRole("button", { name: "Add to cart" }).click(),
+);
+
+expect(capture.spokenPhrase).toContain("Added to cart");
+```
+
 ## Powerful tooling
 
 Check out some of the other Guidepup modules:
