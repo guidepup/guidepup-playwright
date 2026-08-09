@@ -1,6 +1,12 @@
 import { test } from "@playwright/test";
-import { nvda, WindowsKeyCodes, WindowsModifiers } from "@guidepup/guidepup";
-import type { CommandOptions, NVDA } from "@guidepup/guidepup";
+import {
+  type CommandOptions,
+  nvda,
+  type NVDA,
+  type StartOptions,
+  WindowsKeyCodes,
+  WindowsModifiers,
+} from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
 import { delay } from "./delay";
 
@@ -9,6 +15,7 @@ type Prettify<T> = {
 } & {};
 
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
+type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 
 /**
  * [API Reference](https://www.guidepup.dev/docs/api/class-nvda)
@@ -39,9 +46,7 @@ export interface NVDAPlaywright extends NVDA {
    *
    * This command should be used after page navigation.
    */
-  navigateToWebContent(
-    options?: Pick<CommandOptions, "capture">,
-  ): Promise<void>;
+  navigateToWebContent(options?: CaptureCommandOptions): Promise<void>;
 }
 
 const nvdaPlaywright: NVDAPlaywright = nvda as NVDAPlaywright;
@@ -149,11 +154,11 @@ export const nvdaTest = test.extend<{
    */
   nvda: NVDAPlaywright;
   /**
-   * [API Reference](https://www.guidepup.dev/docs/api/class-command-options)
+   * [API Reference](https://www.guidepup.dev/docs/api/class-start-options)
    *
    * Options to start NVDA with, see also [nvda.start([options])](https://www.guidepup.dev/docs/api/class-nvda#nvda-start).
    */
-  nvdaStartOptions: CaptureCommandOptions;
+  nvdaStartOptions: CaptureStartOptions;
 }>({
   nvdaStartOptions: { capture: "initial" },
   nvda: async ({ browserName, page, nvdaStartOptions }, use) => {

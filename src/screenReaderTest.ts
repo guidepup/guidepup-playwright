@@ -1,12 +1,13 @@
 import { test } from "@playwright/test";
 import {
-  CommandOptions,
+  type CommandOptions,
   macOSActivate,
   MacOSKeyCodes,
   nvda,
   NVDAKeyCodeCommands,
   screenReader,
   type ScreenReader,
+  type StartOptions,
   voiceOver,
   voiceOverKeyCodeCommands,
   WindowsKeyCodes,
@@ -20,6 +21,7 @@ type Prettify<T> = {
 } & {};
 
 type CaptureCommandOptions = Prettify<Pick<CommandOptions, "capture">>;
+type CaptureStartOptions = Prettify<Pick<StartOptions, "capture" | "settings">>;
 
 const MAX_APPLICATION_SWITCH_RETRY_COUNT = 10;
 
@@ -125,9 +127,7 @@ export interface ScreenReaderPlaywright extends ScreenReader {
    *
    * This command should be used after page navigation.
    */
-  navigateToWebContent(
-    options?: Pick<CommandOptions, "capture">,
-  ): Promise<void>;
+  navigateToWebContent(options?: CaptureCommandOptions): Promise<void>;
 }
 
 const screenReaderPlaywright: ScreenReaderPlaywright =
@@ -169,7 +169,7 @@ export const screenReaderTest = test.extend<{
   /**
    * Options to start the default screen reader with.
    */
-  screenReaderStartOptions: CaptureCommandOptions;
+  screenReaderStartOptions: CaptureStartOptions;
 }>({
   screenReaderStartOptions: { capture: "initial" },
   screenReader: async (
@@ -275,51 +275,93 @@ export const screenReaderTest = test.extend<{
           await page.bringToFront();
           await page.locator("body").waitFor();
 
-          // Open the web item chooser.
-          await screenReaderPlaywright.perform(
-            voiceOverKeyCodeCommands.openItemChooser,
-            { capture: false },
-          );
-          await delay(500);
+          try {
+            // Add an interactive marker to the page that will force VoiceOver
+            // to listen to events emitted by Playwright interactions when
+            // navigated to.
+            await page.evaluate(() => {
+              const marker = document.createElement("input");
 
-          // Filter by "web content" - currently web content items for all browsers
-          // are suffixed by "web content".
-          for (const character of "web content") {
-            await screenReaderPlaywright.type(character, { capture: false });
+              marker.id = "__guidepup_marker__";
+              marker.type = "text";
+              marker.value = "Guidepup Marker";
+              marker.readOnly = true;
+              marker.tabIndex = -1;
+              marker.autocomplete = "off";
+              marker.setAttribute("aria-label", "Guidepup Marker");
+              marker.style.cssText = `
+                      position: absolute;
+                      width: 1px;
+                      height: 1px;
+                      overflow: hidden;
+                      clip: rect(0 0 0 0);
+                      white-space: nowrap;
+                    `;
+
+              document.body.prepend(marker);
+            });
+
+            // Open the web item chooser.
+            await screenReaderPlaywright.perform(
+              voiceOverKeyCodeCommands.openItemChooser,
+              { capture: false },
+            );
+            await delay(500);
+
+            // Filter by "web content" - currently web content items for all browsers
+            // are suffixed by "web content".
+            for (const character of "web content") {
+              await screenReaderPlaywright.type(character, { capture: false });
+              await delay(100);
+            }
+
+            // Select the web content window spot.
+            await screenReaderPlaywright.perform(
+              { keyCode: MacOSKeyCodes.Enter },
+              { capture: false },
+            );
             await delay(100);
+
+            // Navigate into web content.
+            await screenReaderPlaywright.interact({ capture: false });
+            await delay(100);
+
+            // Navigate to the beginning of the web content.
+            await screenReaderPlaywright.perform(
+              voiceOverKeyCodeCommands.moveToBeginningOfText,
+              { capture: false },
+            );
+            await delay(100);
+
+            // Cancel auto navigation
+            await screenReaderPlaywright.perform(
+              { keyCode: MacOSKeyCodes.Control },
+              { capture: false },
+            );
+            await delay(100);
+
+            // Navigate to the Guidepup marker element at beginning of the web
+            // content.
+            await screenReaderPlaywright.perform(
+              voiceOverKeyCodeCommands.moveToBeginningOfText,
+              { capture: false },
+            );
+            await delay(100);
+
+            // Navigate to the first element of the page using the provided
+            // capture settings.
+            await screenReaderPlaywright.next({ capture });
+          } finally {
+            // Remove the temporary Guidepup marker element to restore original
+            // page structure.
+            await page.evaluate(() => {
+              const marker = document.querySelector("#__guidepup_marker__");
+
+              if (marker) {
+                document.body.removeChild(marker);
+              }
+            });
           }
-
-          // Select the web content window spot.
-          await screenReaderPlaywright.perform(
-            { keyCode: MacOSKeyCodes.Enter },
-            { capture: false },
-          );
-          await delay(100);
-
-          // Navigate into web content.
-          await screenReaderPlaywright.interact({ capture: false });
-          await delay(100);
-
-          // Navigate to the beginning of the web content.
-          await screenReaderPlaywright.perform(
-            voiceOverKeyCodeCommands.moveToBeginningOfText,
-            { capture: false },
-          );
-          await delay(100);
-
-          // Cancel auto navigation
-          await screenReaderPlaywright.perform(
-            { keyCode: MacOSKeyCodes.Control },
-            { capture: false },
-          );
-          await delay(100);
-
-          // Navigate to the beginning of the web content, using chosen capture
-          // settings, so don't miss announcing the first item on the page.
-          await screenReaderPlaywright.perform(
-            voiceOverKeyCodeCommands.moveToBeginningOfText,
-            { capture },
-          );
         };
       } else {
         throw new Error("No supported screen reader");
