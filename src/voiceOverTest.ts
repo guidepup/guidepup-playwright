@@ -99,7 +99,7 @@ export const voiceOverTest = test.extend<{
         // Ensure application is brought to front and focused.
         await macOSActivate(applicationName);
 
-        // Cancel auto navigation.
+        // Cancel automatic behaviours/previous commands.
         await voiceOverPlaywright.perform(
           { keyCode: MacOSKeyCodes.Control },
           { capture: false },
@@ -161,24 +161,9 @@ export const voiceOverTest = test.extend<{
           await voiceOverPlaywright.interact({ capture: false });
           await delay(100);
 
-          // Navigate to the beginning of the web content.
-          await voiceOverPlaywright.perform(
-            voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
-            { capture: false },
-          );
-          await delay(100);
-
-          // Cancel auto navigation
+          // Cancel automatic behaviours/previous commands.
           await voiceOverPlaywright.perform(
             { keyCode: MacOSKeyCodes.Control },
-            { capture: false },
-          );
-          await delay(100);
-
-          // Navigate to the Guidepup marker element at beginning of the web
-          // content.
-          await voiceOverPlaywright.perform(
-            voiceOverPlaywright.keyboardCommands.moveToBeginningOfText,
             { capture: false },
           );
           await delay(100);
