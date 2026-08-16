@@ -264,7 +264,7 @@ export const screenReaderTest = test.extend<{
           // Ensure application is brought to front and focused.
           await macOSActivate(applicationName);
 
-          // Cancel auto navigation.
+          // Cancel automatic behaviours/previous commands.
           await screenReaderPlaywright.perform(
             { keyCode: MacOSKeyCodes.Control },
             { capture: false },
@@ -324,28 +324,6 @@ export const screenReaderTest = test.extend<{
 
             // Navigate into web content.
             await screenReaderPlaywright.interact({ capture: false });
-            await delay(100);
-
-            // Navigate to the beginning of the web content.
-            await screenReaderPlaywright.perform(
-              voiceOverKeyCodeCommands.moveToBeginningOfText,
-              { capture: false },
-            );
-            await delay(100);
-
-            // Cancel auto navigation
-            await screenReaderPlaywright.perform(
-              { keyCode: MacOSKeyCodes.Control },
-              { capture: false },
-            );
-            await delay(100);
-
-            // Navigate to the Guidepup marker element at beginning of the web
-            // content.
-            await screenReaderPlaywright.perform(
-              voiceOverKeyCodeCommands.moveToBeginningOfText,
-              { capture: false },
-            );
             await delay(100);
 
             // Navigate to the first element of the page using the provided
