@@ -159,7 +159,7 @@ const openItemChooser = async ({
 }) => {
   let lastSpokenPhrase = "";
 
-  while (!lastSpokenPhrase.includes("Item Chooser")) {
+  while (!lastSpokenPhrase.toLowerCase().includes("item chooser")) {
     await cancelCurrentInteraction({ screenReaderPlaywright });
     await delay(100);
     await closeMenus({ screenReaderPlaywright });
@@ -167,7 +167,7 @@ const openItemChooser = async ({
 
     await screenReaderPlaywright.perform(
       voiceOverKeyCodeCommands.openItemChooser,
-      { capture: "initial" },
+      { capture: true },
     );
 
     lastSpokenPhrase = await screenReaderPlaywright.lastSpokenPhrase();
