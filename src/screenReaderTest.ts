@@ -326,13 +326,6 @@ export const screenReaderTest = test.extend<{
             await screenReaderPlaywright.interact({ capture: false });
             await delay(100);
 
-            // Cancel automatic behaviours/previous commands.
-            await screenReaderPlaywright.perform(
-              { keyCode: MacOSKeyCodes.Control },
-              { capture: false },
-            );
-            await delay(100);
-
             // Navigate to the first element of the page using the provided
             // capture settings.
             await screenReaderPlaywright.next({ capture });

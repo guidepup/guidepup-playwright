@@ -161,13 +161,6 @@ export const voiceOverTest = test.extend<{
           await voiceOverPlaywright.interact({ capture: false });
           await delay(100);
 
-          // Cancel automatic behaviours/previous commands.
-          await voiceOverPlaywright.perform(
-            { keyCode: MacOSKeyCodes.Control },
-            { capture: false },
-          );
-          await delay(100);
-
           // Navigate to the first element of the page using the provided
           // capture settings.
           await voiceOverPlaywright.next({ capture });
