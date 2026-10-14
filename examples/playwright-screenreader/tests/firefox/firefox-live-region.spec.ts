@@ -2,7 +2,7 @@ import { platform, release } from "os";
 import { delay } from "../../../../src/delay";
 import { expect } from "@playwright/test";
 import { log } from "../../../log";
-import { screenReaderTest as test } from "../../screenreader-test";
+import { screenReaderTest as test } from "../../../../src";
 
 const MAX_NAVIGATION_LOOP = 10;
 

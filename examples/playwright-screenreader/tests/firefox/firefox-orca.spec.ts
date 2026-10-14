@@ -3,7 +3,7 @@ import { delay } from "../../../../src/delay";
 import { log } from "../../../log";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
-import { screenReaderTest as test } from "../../screenreader-test";
+import { screenReaderTest as test } from "../../../../src";
 
 const MAX_NAVIGATION_LOOP = 10;
 
