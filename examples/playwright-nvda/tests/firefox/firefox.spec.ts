@@ -1,13 +1,22 @@
 import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import { windowsRecord } from "@guidepup/record";
 import spokenPhraseSnapshot from "./firefox.spokenPhrase.snapshot.json";
 import { nvdaTest as test } from "../../../../src";
 
-test.use({ nvdaStartOptions: { capture: "initial" } });
+const record = async (filepath: string) => {
+  try {
+    const { windowsRecord } = await import("@guidepup/record");
 
-test.describe("Firefox Playwright VoiceOver", () => {
+    return windowsRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
+
+test.describe("Firefox Playwright NVDA", () => {
   test("I can navigate the Guidepup documentation site", async ({
     browser,
     browserName,
@@ -32,10 +41,10 @@ test.describe("Firefox Playwright VoiceOver", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
-      stopRecording = windowsRecord(recordingFilePath);
+      stopRecording = await record(recordingFilePath);
 
       await headerNavigation({ page, nvda });
 
@@ -48,7 +57,7 @@ test.describe("Firefox Playwright VoiceOver", () => {
 
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 });

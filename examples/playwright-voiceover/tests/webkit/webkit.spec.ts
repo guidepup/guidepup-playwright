@@ -1,12 +1,24 @@
 import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
-import itemTextSnapshot from "./webkit.itemText.snapshot.json";
+import itemTextSnapshotDocs from "./webkit.itemText.docs.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import { macOSRecord } from "@guidepup/record";
-import spokenPhraseSnapshot from "./webkit.spokenPhrase.snapshot.json";
+import spokenPhraseSnapshotDocs from "./webkit.spokenPhrase.docs.snapshot.json";
+import spokenPhraseSnapshotTextarea from "./webkit.spokenPhrase.textarea.snapshot.json";
 import { voiceOverTest as test } from "../../../../src";
+import { log } from "../../../log";
+import { expect } from "@playwright/test";
 
-test.use({ voiceOverStartOptions: { capture: "initial" } });
+const record = async (filepath: string) => {
+  try {
+    const { macOSRecord } = await import("@guidepup/record");
+
+    return macOSRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
 
 test.describe("Webkit Playwright VoiceOver", () => {
   test("I can navigate the Guidepup documentation site", async ({
@@ -33,10 +45,10 @@ test.describe("Webkit Playwright VoiceOver", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
-      stopRecording = macOSRecord(recordingFilePath);
+      stopRecording = await record(recordingFilePath);
 
       await headerNavigation({ page, voiceOver });
 
@@ -49,10 +61,85 @@ test.describe("Webkit Playwright VoiceOver", () => {
       console.log(JSON.stringify(itemTextLog, undefined, 2));
       console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
-      logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
-      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      logIncludesExpectedPhrases(itemTextLog, itemTextSnapshotDocs);
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotDocs);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
+    }
+  });
+
+  test("I can type text into text areas and it is announced (https://github.com/guidepup/guidepup/issues/115)", async ({
+    browser,
+    browserName,
+    page,
+    voiceOver,
+  }) => {
+    const osName = platform();
+    const osVersion = release();
+    const browserVersion = browser.version();
+    const screenReaderName = voiceOver.name;
+    const screenReaderVersion = voiceOver.version;
+    const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-voiceover-textarea-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+
+    console.table({
+      osName,
+      osVersion,
+      browserName,
+      browserVersion,
+      screenReaderName,
+      screenReaderVersion,
+      retry,
+    });
+
+    let stopRecording: (() => Promise<void>) | undefined;
+
+    try {
+      stopRecording = await record(recordingFilePath);
+
+      log("Navigating to textarea test page.");
+      await page.goto("about:blank", {
+        waitUntil: "load",
+      });
+
+      await page.setContent(`
+        <label for="test">Test Input</label>
+        <input id="test" />
+      `);
+
+      const input = page.locator("#test");
+      await input.waitFor();
+      await voiceOver.navigateToWebContent();
+
+      log(`Performing command: "VO+Right Arrow"`);
+      await voiceOver.next();
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Typing: "Abc"`);
+      await voiceOver.type("Abc");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Pressing: "Cmd+A"`);
+      await voiceOver.press("Cmd+A");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Pressing: "Delete"`);
+      await voiceOver.press("Delete");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      log(`Typing: "123"`);
+      await voiceOver.type("123");
+      log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+      await expect(input).toHaveValue("123");
+
+      const spokenPhraseLog = await voiceOver.spokenPhraseLog();
+
+      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotTextarea);
+    } finally {
+      await stopRecording?.();
     }
   });
 });

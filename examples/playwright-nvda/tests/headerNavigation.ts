@@ -1,7 +1,7 @@
-import { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { delay } from "../../../src/delay";
 import { log } from "../../log";
 import type { NVDAPlaywright } from "../../../src";
-import { delay } from "../../../src/delay";
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -40,4 +40,28 @@ export async function headerNavigation({
     await nvda.nextHeading();
     log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
   }
+
+  let tabCount = 0;
+
+  // Move across text and buttons using NVDA
+  while (
+    !(await nvda.lastSpokenPhrase()).replaceAll(/\s/g, "").includes("GitHub") &&
+    tabCount <= MAX_NAVIGATION_LOOP
+  ) {
+    tabCount++;
+
+    log(`Performing command: "Right"`);
+    await nvda.next();
+    log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+  }
+
+  log(`Performing command: "Left"`);
+  await nvda.previous();
+  log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+
+  log(`Performing command: "Enter"`);
+  await nvda.act();
+  log(`Screen reader output: "${await nvda.lastSpokenPhrase()}".`);
+
+  await expect(page).toHaveURL("https://www.guidepup.dev/docs/getting-started");
 }

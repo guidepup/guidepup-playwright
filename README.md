@@ -11,15 +11,18 @@
 
 ## [Documentation](https://guidepup.dev) | [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
 
-[![MacOS Sonoma Support](https://img.shields.io/badge/macos-Somona-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-sonoma/id6450717509)
-[![MacOS Sequoia Support](https://img.shields.io/badge/macos-Sequoia-blue.svg?logo=apple)](https://apps.apple.com/us/app/macos-sequoia/id6596773750)
-[![MacOS Tahoe Support](https://img.shields.io/badge/macos-Tahoe-blue.svg?logo=apple)](https://www.apple.com/uk/os/macos/)
+[![macOS Sonoma Support](https://img.shields.io/badge/macos-Sonoma-blue.svg?logo=apple)](https://support.apple.com/en-gb/102662)
+[![macOS Sequoia Support](https://img.shields.io/badge/macos-Sequoia-blue.svg?logo=apple)](https://support.apple.com/en-gb/102662)
+[![macOS Tahoe Support](https://img.shields.io/badge/macos-Tahoe-blue.svg?logo=apple)](https://support.apple.com/en-gb/102662)
+[![macOS Golden Gate Support](https://img.shields.io/badge/macos-Golden%20Gate-blue.svg?logo=apple)](https://support.apple.com/en-gb/127455)
 [![Windows Server 2022 Support](https://img.shields.io/badge/windows_server-2022-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022)
 [![Windows Server 2025 Support](https://img.shields.io/badge/windows_server-2025-blue.svg?logo=windows)](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025)
+[![Ubuntu Resolute Support](https://img.shields.io/badge/ubuntu-26.04%2B-blue.svg?logo=ubuntu)](https://releases.ubuntu.com/resolute/)
+[![Debian Trixie Support](https://img.shields.io/badge/debian-13%2B-blue.svg?logo=debian)](https://www.debian.org/releases/trixie/)
 
 Guidepup is a screen reader automation library for testing.
 
-This package provides [Guidepup](https://github.com/guidepup/guidepup) integration with [Playwright](https://playwright.dev/) to enable testing with <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on MacOS</b></a> and <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>.
+This package provides [Guidepup](https://github.com/guidepup/guidepup) integration with [Playwright](https://playwright.dev/) to enable testing with <a href="https://www.guidepup.dev/docs/api/class-nvda"><b>NVDA on Windows</b></a>, <a href="https://www.guidepup.dev/docs/api/class-orca"><b>Orca on Linux</b></a>, and <a href="https://www.guidepup.dev/docs/api/class-voiceover"><b>VoiceOver on macOS</b></a>.
 
 ## Capabilities
 
@@ -78,7 +81,7 @@ Check out the configuration this adds [in the `config.ts` file](./src/config.ts)
 
 ### Web content navigation
 
-In addition to the Guidepup APIs the `screenReader`, `voiceOver`, and `nvda` instances provided by the Guidepup Playwright setup have an additional utility method `.navigateToWebContent()`.
+In addition to the Guidepup APIs the `screenReader`, `nvda`, `orca`, and `voiceOver` instances provided by the Guidepup Playwright setup have an additional utility method `.navigateToWebContent()`.
 
 This method will navigate the screen reader to the first element of the document body in the browser.
 
@@ -101,7 +104,7 @@ await screenReader.navigateToWebContent();
 
 ### Providing screen reader start options
 
-The options provided to `screenReader.start([options])`, `nvda.start([options])`, or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
+The options provided to `screenReader.start([options])`, `nvda.start([options])`, `orca.start([options])`, or `voiceOver.start([options])` can be configured using `test.use(config)` as follows:
 
 ```ts
 // Screen Reader Example
@@ -112,14 +115,6 @@ test.use({ screenReaderStartOptions: { capture: true } });
 ```
 
 ```ts
-// VoiceOver Example
-import { voiceOverTest as test } from "@guidepup/playwright";
-
-// Capture all spoken phrases, including usage hints
-test.use({ voiceOverStartOptions: { capture: true } });
-```
-
-```ts
 // NVDA Example
 import { nvdaTest as test } from "@guidepup/playwright";
 
@@ -127,7 +122,147 @@ import { nvdaTest as test } from "@guidepup/playwright";
 test.use({ nvdaStartOptions: { capture: true } });
 ```
 
-The default for VoiceOver and NVDA is set to `"initial"`. `true` captures all spoken phrases, including usage hints. `false` disables spoken phrase capture.
+```ts
+// Orca Example
+import { orcaTest as test } from "@guidepup/playwright";
+
+// Capture all spoken phrases, including usage hints
+test.use({ orcaStartOptions: { capture: true } });
+```
+
+```ts
+// VoiceOver Example
+import { voiceOverTest as test } from "@guidepup/playwright";
+
+// Capture all spoken phrases, including usage hints
+test.use({ voiceOverStartOptions: { capture: true } });
+```
+
+The default for NVDA, Orca, and VoiceOver is set to `"initial"`. `true` captures all spoken phrases, including usage hints. `false` disables spoken phrase capture.
+
+### NVDA example
+
+`playwright.config.ts`:
+
+```ts
+import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { screenReaderConfig } from "@guidepup/playwright";
+
+const config: PlaywrightTestConfig = {
+  ...screenReaderConfig,
+  reportSlowTests: null,
+  timeout: 5 * 60 * 1000,
+  retries: 2,
+  projects: [
+    {
+      name: "chrome",
+      // Take care to ensure all usage is headed - screen readers cannot
+      // operate against headless browsers.
+      use: { ...devices["Desktop Chrome"], headless: false },
+    },
+  ],
+};
+
+export default config;
+```
+
+`nvda.spec.ts`:
+
+```ts
+import { nvdaTest as test } from "@guidepup/playwright";
+import { expect } from "@playwright/test";
+
+test.describe("Playwright NVDA", () => {
+  test("I can navigate the Guidepup Github page with NVDA", async ({
+    page,
+    nvda,
+  }) => {
+    // Navigate to Guidepup GitHub page
+    await page.goto("https://github.com/guidepup/guidepup", {
+      waitUntil: "load",
+    });
+
+    // Wait for page to be ready and setup
+    const header = page.locator('header[role="banner"]');
+    await header.waitFor();
+
+    // Interact with the page
+    await nvda.navigateToWebContent();
+
+    // Move across the page menu to the Guidepup heading using NVDA
+    while (
+      !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
+    ) {
+      await nvda.nextHeading();
+    }
+
+    // Assert that the spoken phrases are as expected
+    expect(JSON.stringify(await nvda.spokenPhraseLog())).toMatchSnapshot();
+  });
+});
+```
+
+### Orca example
+
+`playwright.config.ts`:
+
+```ts
+import { devices, PlaywrightTestConfig } from "@playwright/test";
+import { screenReaderConfig } from "@guidepup/playwright";
+
+const config: PlaywrightTestConfig = {
+  ...screenReaderConfig,
+  reportSlowTests: null,
+  timeout: 5 * 60 * 1000,
+  retries: 2,
+  projects: [
+    {
+      name: "firefox",
+      // Take care to ensure all usage is headed - screen readers cannot
+      // operate against headless browsers.
+      use: { ...devices["Desktop Firefox"], headless: false },
+    },
+  ],
+};
+
+export default config;
+```
+
+`orca.spec.ts`:
+
+```ts
+import { orcaTest as test } from "@guidepup/playwright";
+import { expect } from "@playwright/test";
+
+test.describe("Playwright Orca", () => {
+  test("I can navigate the Guidepup Github page with Orca", async ({
+    page,
+    orca,
+  }) => {
+    // Navigate to Guidepup GitHub page
+    await page.goto("https://github.com/guidepup/guidepup", {
+      waitUntil: "load",
+    });
+
+    // Wait for page to be ready and setup
+    const header = page.locator('header[role="banner"]');
+    await header.waitFor();
+
+    // Interact with the page
+    await orca.navigateToWebContent();
+
+    // Move across the page menu to the Guidepup heading using Orca
+    while (
+      !(await orca.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
+    ) {
+      await orca.nextHeading();
+    }
+
+    // Assert that the spoken phrases are as expected
+    expect(JSON.stringify(await orca.spokenPhraseLog())).toMatchSnapshot();
+  });
+});
+```
 
 ### VoiceOver example
 
@@ -189,68 +324,6 @@ test.describe("Playwright VoiceOver", () => {
 });
 ```
 
-### NVDA example
-
-`playwright.config.ts`:
-
-```ts
-import { devices, PlaywrightTestConfig } from "@playwright/test";
-import { screenReaderConfig } from "@guidepup/playwright";
-
-const config: PlaywrightTestConfig = {
-  ...screenReaderConfig,
-  reportSlowTests: null,
-  timeout: 5 * 60 * 1000,
-  retries: 2,
-  projects: [
-    {
-      name: "firefox",
-      // Take care to ensure all usage is headed - screen readers cannot
-      // operate against headless browsers.
-      use: { ...devices["Desktop Firefox"], headless: false },
-    },
-  ],
-};
-
-export default config;
-```
-
-`nvda.spec.ts`:
-
-```ts
-import { nvdaTest as test } from "@guidepup/playwright";
-import { expect } from "@playwright/test";
-
-test.describe("Playwright NVDA", () => {
-  test("I can navigate the Guidepup Github page with NVDA", async ({
-    page,
-    nvda,
-  }) => {
-    // Navigate to Guidepup GitHub page
-    await page.goto("https://github.com/guidepup/guidepup", {
-      waitUntil: "load",
-    });
-
-    // Wait for page to be ready and setup
-    const header = page.locator('header[role="banner"]');
-    await header.waitFor();
-
-    // Interact with the page
-    await nvda.navigateToWebContent();
-
-    // Move across the page menu to the Guidepup heading using NVDA
-    while (
-      !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
-    ) {
-      await nvda.nextHeading();
-    }
-
-    // Assert that the spoken phrases are as expected
-    expect(JSON.stringify(await nvda.spokenPhraseLog())).toMatchSnapshot();
-  });
-});
-```
-
 ### Capture Playwright Interactions
 
 Use the `capture()` API to wrap Playwright interactions and capture the resulting screen reader output without needing to perform the interaction through Guidepup.
@@ -267,14 +340,14 @@ expect(capture.spokenPhrase).toContain("Added to cart");
 
 Check out some of the other Guidepup modules:
 
-- [`@guidepup/guidepup`](https://github.com/guidepup/guidepup/) - Reliable automation for your screen reader a11y workflows through JavaScript supporting VoiceOver and NVDA.
 - [`@guidepup/setup`](https://github.com/guidepup/setup/) - Set up your local or CI environment for screen reader test automation.
+- [`@guidepup/guidepup`](https://github.com/guidepup/guidepup/) - Reliable automation for your screen reader a11y workflows through JavaScript supporting VoiceOver, NVDA, and Orca.
 - [`@guidepup/virtual-screen-reader`](https://github.com/guidepup/virtual-screen-reader/) - Reliable unit testing for your screen reader a11y workflows.
 - [`@guidepup/jest`](https://github.com/guidepup/jest/) - Jest matchers for reliable unit testing of your screen reader a11y workflows.
 
 ## Resources
 
-- [Documentation](https://www.guidepup.dev/docs/example)
+- [Documentation](https://www.guidepup.dev/docs/getting-started/real-world-example)
 - [API Reference](https://www.guidepup.dev/docs/api/class-guidepup)
 - [Contributing](.github/CONTRIBUTING.md)
 - [Changelog](https://github.com/guidepup/guidepup-playwright/releases)

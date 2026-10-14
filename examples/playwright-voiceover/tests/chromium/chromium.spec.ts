@@ -2,11 +2,20 @@ import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import itemTextSnapshot from "./chromium.itemText.snapshot.json";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import { macOSRecord } from "@guidepup/record";
 import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
 import { voiceOverTest as test } from "../../../../src";
 
-test.use({ voiceOverStartOptions: { capture: "initial" } });
+const record = async (filepath: string) => {
+  try {
+    const { macOSRecord } = await import("@guidepup/record");
+
+    return macOSRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
 
 test.describe("Chromium Playwright VoiceOver", () => {
   test("I can navigate the Guidepup documentation site", async ({
@@ -33,10 +42,10 @@ test.describe("Chromium Playwright VoiceOver", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
-      stopRecording = macOSRecord(recordingFilePath);
+      stopRecording = await record(recordingFilePath);
 
       await headerNavigation({ page, voiceOver });
 
@@ -52,7 +61,7 @@ test.describe("Chromium Playwright VoiceOver", () => {
       logIncludesExpectedPhrases(itemTextLog, itemTextSnapshot);
       logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
     }
   });
 });

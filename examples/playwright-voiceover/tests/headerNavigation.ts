@@ -1,7 +1,7 @@
-import { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { delay } from "../../../src/delay";
 import { log } from "../../log";
 import type { VoiceOverPlaywright } from "../../../src";
-import { delay } from "../../../src/delay";
 
 const MAX_NAVIGATION_LOOP = 10;
 
@@ -49,4 +49,41 @@ export async function headerNavigation({
     await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
     log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
   }
+
+  let tabCount = 0;
+
+  // Move across text and buttons using VoiceOver
+  while (
+    !(await voiceOver.itemText()).includes("GitHub") &&
+    tabCount <= MAX_NAVIGATION_LOOP
+  ) {
+    tabCount++;
+
+    log(`Performing command: "VO+Right Arrow"`);
+    await voiceOver.next();
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+    log(
+      `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
+    );
+    await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
+    log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+  }
+
+  log(`Performing command: "VO+Left Arrow"`);
+  await voiceOver.previous();
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+  log(
+    `Performing command: "VO+F3" - "Describe the item in the VoiceOver cursor"`,
+  );
+  await voiceOver.perform(voiceOver.keyboardCommands.describeItem);
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+  // Navigate to the Guidepup Getting Started docs
+  log(`Performing command: "VO+Space bar"`);
+  await voiceOver.act();
+  log(`Screen reader output: "${await voiceOver.lastSpokenPhrase()}".`);
+
+  await expect(page).toHaveURL("https://www.guidepup.dev/docs/getting-started");
 }
