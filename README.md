@@ -65,19 +65,17 @@ You can also check out these [examples](https://github.com/guidepup/guidepup-pla
 In your `playwright.config.ts` add the following for the best results with Guidepup for Screen Reader automation:
 
 ```ts
-import { devices, PlaywrightTestConfig } from "@playwright/test";
-import { screenReaderConfig } from "@guidepup/playwright";
+import { withGuidepup } from "@guidepup/playwright";
 
-const config: PlaywrightTestConfig = {
-  ...screenReaderConfig,
-
+export default withGuidepup({
   // ... your custom config
-};
-
-export default config;
+});
 ```
 
-Check out the configuration this adds [in the `config.ts` file](./src/config.ts).
+`withGuidepup` configures Playwright to run tests serially and forces headed
+browsers, including when browser options are specified in individual projects.
+The existing `screenReaderConfig` export remains available if you prefer to
+spread the configuration manually.
 
 ### Web content navigation
 
@@ -145,23 +143,20 @@ The default for NVDA, Orca, and VoiceOver is set to `"initial"`. `true` captures
 `playwright.config.ts`:
 
 ```ts
-import { devices, PlaywrightTestConfig } from "@playwright/test";
-import { screenReaderConfig } from "@guidepup/playwright";
+import { devices } from "@playwright/test";
+import { withGuidepup } from "@guidepup/playwright";
 
-const config: PlaywrightTestConfig = {
-  ...screenReaderConfig,
+const config = withGuidepup({
   reportSlowTests: null,
   timeout: 5 * 60 * 1000,
   retries: 2,
   projects: [
     {
       name: "chrome",
-      // Take care to ensure all usage is headed - screen readers cannot
-      // operate against headless browsers.
-      use: { ...devices["Desktop Chrome"], headless: false },
+      use: { ...devices["Desktop Chrome"] },
     },
   ],
-};
+});
 
 export default config;
 ```
@@ -207,23 +202,20 @@ test.describe("Playwright NVDA", () => {
 `playwright.config.ts`:
 
 ```ts
-import { devices, PlaywrightTestConfig } from "@playwright/test";
-import { screenReaderConfig } from "@guidepup/playwright";
+import { devices } from "@playwright/test";
+import { withGuidepup } from "@guidepup/playwright";
 
-const config: PlaywrightTestConfig = {
-  ...screenReaderConfig,
+const config = withGuidepup({
   reportSlowTests: null,
   timeout: 5 * 60 * 1000,
   retries: 2,
   projects: [
     {
       name: "firefox",
-      // Take care to ensure all usage is headed - screen readers cannot
-      // operate against headless browsers.
-      use: { ...devices["Desktop Firefox"], headless: false },
+      use: { ...devices["Desktop Firefox"] },
     },
   ],
-};
+});
 
 export default config;
 ```
@@ -269,23 +261,20 @@ test.describe("Playwright Orca", () => {
 `playwright.config.ts`:
 
 ```ts
-import { devices, PlaywrightTestConfig } from "@playwright/test";
-import { screenReaderConfig } from "@guidepup/playwright";
+import { devices } from "@playwright/test";
+import { withGuidepup } from "@guidepup/playwright";
 
-const config: PlaywrightTestConfig = {
-  ...screenReaderConfig,
+const config = withGuidepup({
   reportSlowTests: null,
   timeout: 5 * 60 * 1000,
   retries: 2,
   projects: [
     {
       name: "webkit",
-      // Take care to ensure all usage is headed - screen readers cannot
-      // operate against headless browsers.
-      use: { ...devices["Desktop Safari"], headless: false },
+      use: { ...devices["Desktop Safari"] },
     },
   ],
-};
+});
 
 export default config;
 ```

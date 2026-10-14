@@ -7,3 +7,4 @@ export { screenReaderTest } from "./screenReaderTest";
 export type { ScreenReaderPlaywright } from "./screenReaderTest";
 export { voiceOverTest } from "./voiceOverTest";
 export type { VoiceOverPlaywright } from "./voiceOverTest";
+export { withGuidepup } from "./withGuidepup";
