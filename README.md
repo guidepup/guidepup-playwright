@@ -185,9 +185,7 @@ test.describe("Playwright NVDA", () => {
     await nvda.navigateToWebContent();
 
     // Move across the page menu to the Guidepup heading using NVDA
-    while (
-      !(await nvda.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
-    ) {
+    while ((await nvda.lastSpokenPhrase()) !== "Guidepup, heading, level 1") {
       await nvda.nextHeading();
     }
 
@@ -244,9 +242,7 @@ test.describe("Playwright Orca", () => {
     await orca.navigateToWebContent();
 
     // Move across the page menu to the Guidepup heading using Orca
-    while (
-      !(await orca.lastSpokenPhrase()).includes("Guidepup, heading, level 1")
-    ) {
+    while ((await orca.lastSpokenPhrase()) !== "Guidepup. heading 1") {
       await orca.nextHeading();
     }
 
@@ -303,7 +299,9 @@ test.describe("Playwright VoiceOver", () => {
     await voiceOver.navigateToWebContent();
 
     // Move across the page menu to the Guidepup heading using VoiceOver
-    while ((await voiceOver.itemText()) !== "Guidepup heading level 1") {
+    while (
+      (await voiceOver.lastSpokenPhrase()) !== "heading level 1 Guidepup"
+    ) {
       await voiceOver.nextHeading();
     }
 
