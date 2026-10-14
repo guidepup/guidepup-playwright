@@ -1,11 +1,46 @@
 import { platform, release } from "os";
 import { headerNavigation } from "../headerNavigation";
 import { logIncludesExpectedPhrases } from "../../../logIncludesExpectedPhrases";
-import { windowsRecord } from "@guidepup/record";
-import spokenPhraseSnapshot from "./chromium.spokenPhrase.snapshot.json";
+import spokenPhraseSnapshotDocs from "./chromium.spokenPhrase.docs.snapshot.json";
+import spokenPhraseSnapshotTextarea from "./chromium.spokenPhrase.textarea.snapshot.json";
 import { nvdaTest as test } from "../../../../src";
+import { log } from "../../../log";
+import { delay } from "../../../../src/delay";
+import { expect } from "@playwright/test";
 
-test.use({ nvdaStartOptions: { capture: "initial" } });
+const record = async (filepath: string) => {
+  try {
+    const { windowsRecord } = await import("@guidepup/record");
+
+    return windowsRecord(filepath);
+  } catch {
+    console.warn(
+      "@guidepup/record not available. Recording will be skipped. This is expected on platforms without ffmpeg support (e.g., Windows ARM64).",
+    );
+  }
+};
+
+test.use({
+  nvdaStartOptions: {
+    capture: "initial",
+    settings: {
+      speech: {
+        oneCore: {
+          voice:
+            "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices\\Tokens\\MSTTS_V110_enGB_SusanM",
+        },
+      },
+      vision: {
+        NVDAHighlighter: {
+          highlightFocus: false,
+          highlightNavigator: false,
+          highlightBrowseMode: false,
+          enabled: false,
+        },
+      },
+    },
+  },
+});
 
 test.describe("Chromium Playwright NVDA", () => {
   test("I can navigate the Guidepup documentation site", async ({
@@ -32,10 +67,10 @@ test.describe("Chromium Playwright NVDA", () => {
       retry,
     });
 
-    let stopRecording: (() => void) | undefined;
+    let stopRecording: (() => Promise<void>) | undefined;
 
     try {
-      stopRecording = windowsRecord(recordingFilePath);
+      stopRecording = await record(recordingFilePath);
 
       await headerNavigation({ page, nvda });
 
@@ -46,9 +81,72 @@ test.describe("Chromium Playwright NVDA", () => {
 
       console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
 
-      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshot);
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotDocs);
     } finally {
-      stopRecording?.();
+      await stopRecording?.();
+    }
+  });
+
+  test("I can type text into text areas and it is announced (https://github.com/guidepup/guidepup/issues/115)", async ({
+    browser,
+    browserName,
+    page,
+    nvda,
+  }) => {
+    const osName = platform();
+    const osVersion = release();
+    const browserVersion = browser.version();
+    const screenReaderName = nvda.name;
+    const screenReaderVersion = nvda.version;
+    const { retry } = test.info();
+    const recordingFilePath = `./recordings/playwright-nvda-textarea-${osName}-${osVersion}-${browserName}-${browserVersion}-attempt-${retry}-${+new Date()}.mov`;
+
+    console.table({
+      osName,
+      osVersion,
+      browserName,
+      browserVersion,
+      screenReaderName,
+      screenReaderVersion,
+      retry,
+    });
+
+    let stopRecording: (() => Promise<void>) | undefined;
+
+    try {
+      stopRecording = await record(recordingFilePath);
+
+      log("Navigating to textarea test page.");
+      await page.goto("about:blank", {
+        waitUntil: "load",
+      });
+
+      await page.setContent(`
+        <label for="test">Test Input</label>
+        <input id="test" />
+      `);
+
+      const input = page.locator("#test");
+      await input.waitFor();
+      await delay(500);
+
+      await nvda.navigateToWebContent();
+      await delay(500);
+
+      await nvda.type("Abc");
+      await nvda.press("Control+A");
+      await nvda.press("Delete");
+      await nvda.type("123");
+
+      await expect(input).toHaveValue("123");
+
+      const spokenPhraseLog = await nvda.spokenPhraseLog();
+
+      console.log(JSON.stringify(spokenPhraseLog, undefined, 2));
+
+      logIncludesExpectedPhrases(spokenPhraseLog, spokenPhraseSnapshotTextarea);
+    } finally {
+      await stopRecording?.();
     }
   });
 });

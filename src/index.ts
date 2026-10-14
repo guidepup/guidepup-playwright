@@ -1,5 +1,7 @@
 export { nvdaTest } from "./nvdaTest";
 export type { NVDAPlaywright } from "./nvdaTest";
+export { orcaTest } from "./orcaTest";
+export type { OrcaPlaywright } from "./orcaTest";
 export { screenReaderConfig } from "./screenReaderConfig";
 export { screenReaderTest } from "./screenReaderTest";
 export type { ScreenReaderPlaywright } from "./screenReaderTest";
