@@ -13,6 +13,5 @@ npm run test
 ## Test flow
 
 1. The test launches the browser using Playwright
-2. Navigates to the GitHub website
-3. Moves through the website using the default screen reader for the environment, controlled by Guidepup
-4. Traverses headings until the Guidepup heading in the README.md is found
+2. Navigates to the Guidepup website
+3. Moves through the website using the default screen reader for the OS, controlled by Guidepup
