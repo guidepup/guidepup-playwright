@@ -325,10 +325,11 @@ expect(capture.spokenPhrase).toContain("Added to cart");
 
 ## Powerful tooling
 
-Check out some of the other Guidepup modules:
+Check out some of the other Guidepup tooling:
 
 - [`@guidepup/setup`](https://github.com/guidepup/setup/) - Set up your local or CI environment for screen reader test automation.
 - [`@guidepup/guidepup`](https://github.com/guidepup/guidepup/) - Reliable automation for your screen reader a11y workflows through JavaScript supporting VoiceOver, NVDA, and Orca.
+- [`ghcr.io/guidepup/guidepup`](https://github.com/guidepup/guidepup-docker/pkgs/container/guidepup) - Seemless integration of Guidepup in Docker.
 - [`@guidepup/virtual-screen-reader`](https://github.com/guidepup/virtual-screen-reader/) - Reliable unit testing for your screen reader a11y workflows.
 - [`@guidepup/jest`](https://github.com/guidepup/jest/) - Jest matchers for reliable unit testing of your screen reader a11y workflows.
 
