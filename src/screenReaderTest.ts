@@ -5,7 +5,7 @@ import {
   screenReader,
   type ScreenReader,
   type StartOptions,
-  unstable_orca,
+  orca,
   voiceOver,
 } from "@guidepup/guidepup";
 import { applicationNameMap } from "./applicationNameMap";
@@ -130,10 +130,10 @@ export const screenReaderTest = test.extend<{
             applicationId,
             capture,
           });
-      } else if (unstable_orca.default()) {
+      } else if (orca.default()) {
         screenReaderPlaywright.navigateToWebContent = ({ capture } = {}) =>
           navigateOrcaToWebContent({
-            orca: unstable_orca,
+            orca,
             page,
             capture,
           });

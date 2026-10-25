@@ -1,6 +1,6 @@
 {
   "name": "@guidepup/playwright",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "description": "Screen reader automation library for Playwright testing. ",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -47,7 +47,7 @@
     "test:voiceover:webkit": "playwright test --config ./examples/playwright-voiceover/webkit.config.ts ./examples/playwright-voiceover/tests/webkit/"
   },
   "devDependencies": {
-    "@guidepup/guidepup": "^0.36.1",
+    "@guidepup/guidepup": "^0.38.0",
     "@guidepup/record": "^0.3.0",
     "@playwright/test": "^1.62.1",
     "@types/node": "^24.10.1",
@@ -61,7 +61,7 @@
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@guidepup/guidepup": ">=0.36.1",
+    "@guidepup/guidepup": ">=0.38.0",
     "@playwright/test": ">=1.62.1"
   },
   "resolutions": {

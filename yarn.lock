@@ -62,10 +62,10 @@
     "@shikijs/types" "^3.23.0"
     "@shikijs/vscode-textmate" "^10.0.2"
 
-"@guidepup/guidepup@^0.36.1":
-  version "0.36.1"
-  resolved "https://registry.yarnpkg.com/@guidepup/guidepup/-/guidepup-0.36.1.tgz#dff3bcb0233f229f36c17e507a845723987d5d05"
-  integrity sha512-Pucx6sFUeGSeh2Q0bE4JtoH2z0a+BC6yNIFYpBBic6jDI6I1zk5duvg5Jmn0tMN9VSQbGM1KHSXRI//tm9d4rA==
+"@guidepup/guidepup@^0.38.0":
+  version "0.38.0"
+  resolved "https://registry.npmjs.org/@guidepup/guidepup/-/guidepup-0.38.0.tgz#2c9d317ccf2e3ea3ab3af64a7b85902eb26fdda8"
+  integrity sha512-BESjF92DTIaw451unpFxzIfd39WwfqY9x3UUs0f+0r20KotR7u5Q+s3B4IwWAsMKHc7e3G7X47JKjMes8sxMHw==
   dependencies:
     dbus-native "^0.15.1"
     debug "^4.4.3"
